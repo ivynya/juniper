@@ -1,10 +1,12 @@
 <script lang="ts">
 	import Viewer from './Viewer.svelte';
+
+	export let selected: string;
 </script>
 
 <header>
 	<h1>FAUNA</h1>
-	<Viewer options={['Report', 'List', 'Calendar']} selected="List" />
+	<Viewer options={['Report', 'List', 'Calendar']} bind:selected />
 </header>
 
 <style lang="scss">

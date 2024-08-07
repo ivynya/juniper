@@ -1,8 +1,7 @@
 <script lang="ts">
 	export let options: string[];
 	export let selected: string;
-	let active = 0;
-
+	$: active = options.findIndex((o) => o === selected);
 	$: ratchet = 100 / options.length;
 	$: leftness = active * 100;
 </script>
@@ -11,13 +10,8 @@
 	<span style="transform:translateX({leftness}%);width:{ratchet}%;" />
 	<div class="options">
 		{#each options as o, i}
-			<button
-				class:active={i === active}
-				on:click={() => {
-					selected = o;
-					active = i;
-				}}
-				>{o}
+			<button class:active={i === active} on:click={() => (selected = o)}>
+				{o}
 			</button>
 		{/each}
 	</div>

@@ -25,6 +25,7 @@
 	"type": "module",
 	"dependencies": {
 		"chart.js": "^4.4.3",
+		"lucide-svelte": "^0.424.0",
 		"sass": "^1.77.8"
 	}
 }
