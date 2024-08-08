@@ -25,8 +25,9 @@
 	</label>
 	<span>
 		<Calendar size="18px" />
-		<ChevronLeft size="18px" />
+		<br />
 		<span>January 1st, 2018</span>
+		<ChevronLeft size="18px" />
 		<ChevronRight size="18px" />
 	</span>
 </section>
