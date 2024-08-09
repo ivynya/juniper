@@ -19,10 +19,10 @@
 
 <style lang="scss">
 	.slider {
-		border: 1px solid #567;
+		border: 2px dotted #135;
 		border-radius: 2px;
 		transition-duration: 0.5s;
-		height: 22px;
+		height: 18px;
 		padding: 5px 0;
 		position: relative;
 		z-index: 5;
@@ -33,7 +33,7 @@
 			border-radius: 2px;
 			transition-duration: 0.5s;
 			display: block;
-			height: 35px;
+			height: 30px;
 			margin: auto 0;
 
 			position: absolute;
