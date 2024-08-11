@@ -17,6 +17,7 @@
 	.entry {
 		background-color: #345;
 		border-radius: 0.25rem;
+		box-sizing: border-box;
 		color: #fff;
 		display: flex;
 		flex-direction: column;
