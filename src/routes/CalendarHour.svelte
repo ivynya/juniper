@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Entry } from '$lib/schema';
+	import CalendarEntry from './CalendarEntry.svelte';
 
 	export let isDragging: boolean;
 	export let timeA: number;
@@ -9,11 +10,42 @@
 	export let resolution: number;
 
 	export let entries: Entry[];
-	export let cols: number;
 
 	$: height = 35 - resolution * 5;
 	$: naptime = i / resolution < 6 || i / resolution == 23;
 	$: highlighted = isDragging && i >= timeA && i <= timeB;
+
+	$: renderedEntries = [
+		...entries.map((e, i) => {
+			return {
+				...e,
+				__column__: computeColumn(entries.slice(0, i), e.start, e.end)
+			};
+		}),
+		{
+			__column__: computeColumn(entries, timeA / resolution, timeB / resolution),
+			name: 'New entry',
+			client: '',
+			start: timeA / resolution,
+			end: timeB / resolution,
+			duration: Math.abs(timeB - timeA) / resolution,
+			tags: []
+		}
+	];
+	$: cols = Math.max(...renderedEntries.map((e) => e.__column__)) + 1;
+
+	function computeColumn(entries: Entry[], start: number, end: number): number {
+		const conflicting = entries
+			.filter((e) => {
+				return (
+					(e.start <= end && e.start >= start) ||
+					(e.end <= end && e.end > start) ||
+					(e.start <= start && e.end >= end)
+				);
+			})
+			.map((e) => e.__column__);
+		return [0, 1, 2, 3, 4, 5, 6].filter((i) => !conflicting.includes(i)).at(0) || 0;
+	}
 
 	function mouseDown(h: number) {
 		isDragging = true;
@@ -57,13 +89,12 @@
 		{/if}
 	</span>
 	<div class="entries" style="grid-template-columns: repeat({cols}, 1fr);">
-		{#each entries.filter((e) => e.start * resolution === i) as e}
-			<div
-				class="entry"
-				style="grid-column: {e.__column__ + 1}; height: {height * e.duration * resolution}px;"
-			>
-				<span>{e.name}</span>
-			</div>
+		{#each renderedEntries.filter((e) => e.start * resolution === i) as e}
+			<CalendarEntry
+				bind:entry={e}
+				height={height * e.duration * resolution}
+				editing={isDragging}
+			/>
 		{/each}
 	</div>
 </button>
@@ -120,17 +151,6 @@
 			top: 10px;
 			left: 58px;
 			right: 10px;
-
-			.entry {
-				background-color: #345;
-				border-radius: 0.25rem;
-				color: #fff;
-				font-size: 0.8rem;
-				text-align: center;
-				position: relative;
-
-				z-index: 1;
-			}
 		}
 	}
 </style>

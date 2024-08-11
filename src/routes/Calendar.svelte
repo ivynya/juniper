@@ -22,7 +22,6 @@
 			tags: ['']
 		}
 	];
-	$: cols = Math.max(...entries.map((e) => e.__column__)) + 1;
 
 	let resolution = 2;
 	let wakingHoursOnly = false;
@@ -75,7 +74,6 @@
 			bind:timeP
 			bind:resolution
 			bind:entries
-			bind:cols
 			i={adjustHour(i)}
 		/>
 	{/each}
@@ -111,7 +109,7 @@
 		padding-bottom: 0.5rem;
 		position: sticky;
 		top: 0;
-		z-index: 1;
+		z-index: 5;
 
 		.spacer {
 			flex: 1;
