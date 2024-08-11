@@ -47,6 +47,10 @@
 		return [0, 1, 2, 3, 4, 5, 6].filter((i) => !conflicting.includes(i)).at(0) || 0;
 	}
 
+	function deleteEntry(i: number) {
+		entries = entries.filter((_, j) => j !== i).filter((e) => e.duration > 0);
+	}
+
 	function mouseDown(h: number) {
 		isDragging = true;
 		timeA = timeB = timeP = h;
@@ -60,6 +64,21 @@
 		}
 	}
 	function mouseUp() {
+		if (timeA == timeB || timeA < 0 || timeB < 0) {
+			isDragging = false;
+			timeA = timeB = timeP = -1;
+			return;
+		}
+		entries.push({
+			__column__: computeColumn(entries, timeA / resolution, timeB / resolution),
+			name: 'New entry',
+			client: '',
+			start: timeA / resolution,
+			end: timeB / resolution,
+			duration: Math.abs(timeB - timeA) / resolution,
+			tags: []
+		});
+
 		isDragging = false;
 		timeA = timeB = timeP = -1;
 	}
@@ -94,6 +113,7 @@
 				bind:entry={e}
 				height={height * e.duration * resolution}
 				editing={isDragging}
+				on:delete={() => deleteEntry(renderedEntries.indexOf(e))}
 			/>
 		{/each}
 	</div>
