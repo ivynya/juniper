@@ -1,11 +1,13 @@
 <script lang="ts">
 	import { Clock, Calendar, ChevronLeft, ChevronRight, MoonStar } from 'lucide-svelte';
+	import { entries, formatHour } from '$lib/app';
 	import CalendarHour from './CalendarHour.svelte';
 
 	let resolution = 2;
 	let wakingHoursOnly = false;
 
 	$: hours = wakingHoursOnly ? Array(18 * resolution) : Array(24 * resolution);
+	$: today = $entries.map((e) => e.duration).reduce((a, b) => a + b, 0);
 
 	let isDragging = false;
 	let timeA = -1;
@@ -26,7 +28,7 @@
 <section class="opts">
 	<span>
 		<Clock size="18px" />
-		03:45 today
+		{formatHour(today)} today
 	</span>
 	<span class="spacer" />
 	<button class="resolution" on:click={cycleResolution}>

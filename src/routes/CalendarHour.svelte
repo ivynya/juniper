@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Entry } from '$lib/schema';
-	import { entries } from '$lib/app';
+	import { entries, formatHour } from '$lib/app';
 	import CalendarEntry from './CalendarEntry.svelte';
 
 	export let isDragging: boolean;
@@ -81,12 +81,6 @@
 
 		isDragging = false;
 		timeA = timeB = timeP = -1;
-	}
-
-	function formatHour(hour: number): string {
-		const hrs = hour - (hour % 1);
-		const min = ((hour % 1) * 60).toString().padStart(2, '0');
-		return hrs < 10 ? `0${hrs}:${min}` : `${hrs}:${min}`;
 	}
 </script>
 
