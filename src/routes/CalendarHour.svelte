@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Entry } from '$lib/schema';
+	import { entries } from '$lib/app';
 	import CalendarEntry from './CalendarEntry.svelte';
 
 	export let isDragging: boolean;
@@ -9,21 +10,19 @@
 	export let i: number;
 	export let resolution: number;
 
-	export let entries: Entry[];
-
 	$: height = 35 - resolution * 5;
 	$: naptime = i / resolution < 6 || i / resolution == 23;
 	$: highlighted = isDragging && i >= timeA && i <= timeB;
 
 	$: renderedEntries = [
-		...entries.map((e, i) => {
+		...$entries.map((e, i) => {
 			return {
 				...e,
-				__column__: computeColumn(entries.slice(0, i), e.start, e.end)
+				__column__: computeColumn($entries.slice(0, i), e.start, e.end)
 			};
 		}),
 		{
-			__column__: computeColumn(entries, timeA / resolution, timeB / resolution),
+			__column__: computeColumn($entries, timeA / resolution, timeB / resolution),
 			name: 'New entry',
 			client: '',
 			start: timeA / resolution,
@@ -38,7 +37,7 @@
 		const conflicting = entries
 			.filter((e) => {
 				return (
-					(e.start <= end && e.start >= start) ||
+					(e.start < end && e.start >= start) ||
 					(e.end <= end && e.end > start) ||
 					(e.start <= start && e.end >= end)
 				);
@@ -48,7 +47,7 @@
 	}
 
 	function deleteEntry(i: number) {
-		entries = entries.filter((_, j) => j !== i).filter((e) => e.duration > 0);
+		$entries = $entries.filter((_, j) => j !== i).filter((e) => e.duration > 0);
 	}
 
 	function mouseDown(h: number) {
@@ -69,8 +68,8 @@
 			timeA = timeB = timeP = -1;
 			return;
 		}
-		entries.push({
-			__column__: computeColumn(entries, timeA / resolution, timeB / resolution),
+		$entries.push({
+			__column__: computeColumn($entries, timeA / resolution, timeB / resolution),
 			name: 'New entry',
 			client: '',
 			start: timeA / resolution,
@@ -78,6 +77,7 @@
 			duration: Math.abs(timeB - timeA) / resolution,
 			tags: []
 		});
+		$entries = $entries;
 
 		isDragging = false;
 		timeA = timeB = timeP = -1;
@@ -166,7 +166,7 @@
 
 		.entries {
 			display: grid;
-			gap: 0.25rem;
+			gap: 0.125rem;
 			position: absolute;
 			top: 10px;
 			left: 58px;

@@ -2,27 +2,6 @@
 	import { Clock, Calendar, ChevronLeft, ChevronRight, MoonStar } from 'lucide-svelte';
 	import CalendarHour from './CalendarHour.svelte';
 
-	let entries = [
-		{
-			__column__: 0,
-			name: 'Sleep',
-			client: 'Self',
-			start: 0,
-			end: 5,
-			duration: 5,
-			tags: ['']
-		},
-		{
-			__column__: 1,
-			name: 'Sleep',
-			client: 'Self',
-			start: 3,
-			end: 10,
-			duration: 7,
-			tags: ['']
-		}
-	];
-
 	let resolution = 2;
 	let wakingHoursOnly = false;
 
@@ -73,7 +52,6 @@
 			bind:timeB
 			bind:timeP
 			bind:resolution
-			bind:entries
 			i={adjustHour(i)}
 		/>
 	{/each}

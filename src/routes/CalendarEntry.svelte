@@ -23,15 +23,34 @@
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div class="entry" style="{_grid}; {_height}" class:editing on:mousedown={stopProp}>
-	<input type="text" bind:value={entry.name} />
-	<div>
+	<div class="info">
+		<input type="text" bind:value={entry.name} />
+		<span>
+			<select value="etc">
+				<option value="etc">etc</option>
+			</select>
+			•
+			<select value="etc">
+				<option value="etc">etc</option>
+			</select>
+		</span>
+	</div>
+	<div class="opts">
 		<button on:click={del}><Trash size="14px" /></button>
 	</div>
 </div>
 
 <style lang="scss">
 	.entry {
-		background-color: #345;
+		background: repeating-linear-gradient(
+			-60deg,
+			#0001,
+			#0001 1px,
+			transparent 1px,
+			transparent 8px
+		);
+		background-color: #453;
+		border: 1px solid #0003;
 		border-radius: 0.25rem;
 		box-sizing: border-box;
 		color: #fff;
@@ -42,7 +61,7 @@
 		justify-content: space-between;
 		font-size: 0.8rem;
 		text-align: center;
-		padding: 0.5rem 1rem;
+		padding: 0.5rem 0.75rem;
 		position: relative;
 		z-index: 1;
 
@@ -50,10 +69,12 @@
 			pointer-events: none;
 		}
 
-		input {
+		input,
+		select {
+			appearance: none;
 			background-color: transparent;
 			border: none;
-			color: #fff;
+			color: inherit;
 			font-family: inherit;
 			font-size: inherit;
 			margin: 0;
@@ -66,7 +87,26 @@
 			}
 		}
 
-		div {
+		.info {
+			display: flex;
+			flex-direction: column;
+
+			span {
+				color: #fff8;
+				display: flex;
+				align-items: center;
+				gap: 0.5rem;
+				font-size: 0.7rem;
+				margin-top: 0.125rem;
+
+				select {
+					border: none;
+					max-width: fit-content;
+				}
+			}
+		}
+
+		.opts {
 			display: flex;
 			justify-content: space-between;
 			width: 100%;

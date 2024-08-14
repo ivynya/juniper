@@ -7,3 +7,9 @@ export interface Entry {
 	duration: number;
 	tags: string[];
 }
+
+export interface Client {
+	name: string;
+	color: string;
+	projects: string[];
+}
