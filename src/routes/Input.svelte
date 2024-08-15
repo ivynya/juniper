@@ -22,13 +22,15 @@
 		{formatHour(today)} today
 	</span>
 	<span class="spacer" />
-	<button class="resolution" on:click={cycleResolution}>
-		{resolution}x
-	</button>
-	<label for="waking-hours">
-		<MoonStar size="18px" color={wakingHoursOnly ? '#345' : '#134'} />
-		<input type="checkbox" id="waking-hours" hidden bind:checked={wakingHoursOnly} />
-	</label>
+	{#if showCalControls}
+		<button class="resolution" on:click={cycleResolution}>
+			{resolution}x
+		</button>
+		<label for="waking-hours">
+			<MoonStar size="18px" color={wakingHoursOnly ? '#345' : '#134'} />
+			<input type="checkbox" id="waking-hours" hidden bind:checked={wakingHoursOnly} />
+		</label>
+	{/if}
 	{#if showCalControls}
 		<span>
 			<Calendar size="18px" />
