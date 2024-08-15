@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Entry } from '$lib/schema';
+	import { formatHour } from '$lib/app';
 	import { Trash } from 'lucide-svelte';
 	import { createEventDispatcher } from 'svelte';
 
@@ -15,6 +16,9 @@
 	function del() {
 		dispatch('delete', entry);
 	}
+	function upd() {
+		dispatch('update', entry);
+	}
 	function stopProp(e: Event) {
 		e.stopPropagation();
 	}
@@ -24,18 +28,19 @@
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div class="entry" style="{_grid}; {_height}" class:editing on:mousedown={stopProp}>
 	<div class="info">
-		<input type="text" bind:value={entry.name} />
+		<input type="text" bind:value={entry.name} on:keypress={upd} />
 		<span>
-			<select value="etc">
+			<select value="etc" on:change={upd}>
 				<option value="etc">etc</option>
 			</select>
 			•
-			<select value="etc">
+			<select value="etc" on:change={upd}>
 				<option value="etc">etc</option>
 			</select>
 		</span>
 	</div>
 	<div class="opts">
+		<span>{formatHour(entry.duration)}</span>
 		<button on:click={del}><Trash size="14px" /></button>
 	</div>
 </div>
@@ -89,7 +94,9 @@
 
 		.info {
 			display: flex;
-			flex-direction: column;
+			justify-content: space-between;
+			gap: 0.5rem;
+			width: 100%;
 
 			span {
 				color: #fff8;
@@ -97,7 +104,7 @@
 				align-items: center;
 				gap: 0.5rem;
 				font-size: 0.7rem;
-				margin-top: 0.125rem;
+				min-width: fit-content;
 
 				select {
 					border: none;
@@ -110,6 +117,11 @@
 			display: flex;
 			justify-content: space-between;
 			width: 100%;
+
+			span {
+				color: #fff8;
+				font-size: 0.7rem;
+			}
 
 			button {
 				background: transparent;

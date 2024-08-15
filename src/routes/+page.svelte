@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Calendar from './Calendar.svelte';
-	import Entry from './Entry.svelte';
 	import Header from './Header.svelte';
+	import List from './List.svelte';
 
 	export let selected = 'List';
 </script>
@@ -9,9 +9,7 @@
 <Header bind:selected />
 <section class="view">
 	{#if selected === 'List'}
-		{#each Array(20) as _}
-			<Entry />
-		{/each}
+		<List />
 	{:else if selected === 'Calendar'}
 		<Calendar />
 	{:else}

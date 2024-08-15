@@ -49,6 +49,9 @@
 	function deleteEntry(i: number) {
 		$entries = $entries.filter((_, j) => j !== i).filter((e) => e.duration > 0);
 	}
+	function updateEntry(i: number, n: Entry) {
+		$entries = $entries.map((e, j) => (j === i ? n : e));
+	}
 
 	function mouseDown(h: number) {
 		isDragging = true;
@@ -104,10 +107,11 @@
 	<div class="entries" style="grid-template-columns: repeat({cols}, 1fr);">
 		{#each renderedEntries.filter((e) => e.start * resolution === i) as e}
 			<CalendarEntry
-				bind:entry={e}
+				entry={e}
 				height={height * e.duration * resolution}
 				editing={isDragging}
 				on:delete={() => deleteEntry(renderedEntries.indexOf(e))}
+				on:update={(v) => updateEntry(renderedEntries.indexOf(e), v.detail)}
 			/>
 		{/each}
 	</div>
