@@ -1,5 +1,12 @@
+<script lang="ts">
+	import { formatHour } from '$lib/app';
+
+	export let date: string;
+	export let hours: number;
+</script>
+
 <section class="group">
-	<h6>Date time</h6>
+	<h6><span>{date}</span><span>{formatHour(hours)}</span></h6>
 	<slot></slot>
 </section>
 
@@ -13,6 +20,8 @@
 
 		h6 {
 			color: #567;
+			display: flex;
+			justify-content: space-between;
 			font-size: 0.8rem;
 			margin: 0;
 			padding: 0.5rem 1rem;

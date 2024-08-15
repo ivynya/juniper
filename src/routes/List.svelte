@@ -3,14 +3,27 @@
 	import Input from './Input.svelte';
 	import ListEntry from './ListEntry.svelte';
 	import ListGroup from './ListGroup.svelte';
+
+	$: groups = $entries.reduce(
+		(acc, entry) => {
+			const date = new Date(entry.start);
+			const key = date.toDateString();
+			if (!acc[key]) acc[key] = [];
+			acc[key].push(entry);
+			return acc;
+		},
+		{} as Record<string, any[]>
+	);
 </script>
 
 <Input />
-<ListGroup>
-	{#each $entries as entry}
-		<ListEntry {entry} />
-	{/each}
-</ListGroup>
+{#each Object.entries(groups) as [date, entries]}
+	<ListGroup {date} hours={entries.reduce((acc, entry) => acc + entry.duration, 0)}>
+		{#each entries as entry}
+			<ListEntry {entry} />
+		{/each}
+	</ListGroup>
+{/each}
 
 <style lang="scss">
 </style>
