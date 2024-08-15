@@ -30,11 +30,11 @@
 	<div class="info">
 		<input type="text" bind:value={entry.name} on:keypress={upd} />
 		<span>
-			<select value="etc" on:change={upd}>
+			<select bind:value={entry.project} on:change={upd}>
 				<option value="etc">etc</option>
 			</select>
 			•
-			<select value="etc" on:change={upd}>
+			<select bind:value={entry.client} on:change={upd}>
 				<option value="etc">etc</option>
 			</select>
 		</span>
