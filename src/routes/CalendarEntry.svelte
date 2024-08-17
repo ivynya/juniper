@@ -3,6 +3,7 @@
 	import { formatHour } from '$lib/app';
 	import { Trash } from 'lucide-svelte';
 	import { createEventDispatcher } from 'svelte';
+	import EntryProject from './EntryProject.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -29,15 +30,7 @@
 <div class="entry" style="{_grid}; {_height}" class:editing on:mousedown={stopProp}>
 	<div class="info">
 		<input type="text" bind:value={entry.name} on:keypress={upd} />
-		<span>
-			<select bind:value={entry.project} on:change={upd}>
-				<option value="etc">etc</option>
-			</select>
-			•
-			<select bind:value={entry.client} on:change={upd}>
-				<option value="etc">etc</option>
-			</select>
-		</span>
+		<EntryProject {entry} on:update={upd} />
 	</div>
 	<div class="opts">
 		<span>{formatHour(entry.duration)}</span>
@@ -74,8 +67,7 @@
 			pointer-events: none;
 		}
 
-		input,
-		select {
+		input {
 			appearance: none;
 			background-color: transparent;
 			border: none;
@@ -97,20 +89,6 @@
 			justify-content: space-between;
 			gap: 0.5rem;
 			width: 100%;
-
-			span {
-				color: #fff8;
-				display: flex;
-				align-items: center;
-				gap: 0.5rem;
-				font-size: 0.7rem;
-				min-width: fit-content;
-
-				select {
-					border: none;
-					max-width: fit-content;
-				}
-			}
 		}
 
 		.opts {

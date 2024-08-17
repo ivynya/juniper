@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Clock, Calendar, ChevronLeft, ChevronRight, MoonStar } from 'lucide-svelte';
+	import { Clock, Calendar, ChevronLeft, ChevronRight, MoonStar, Check } from 'lucide-svelte';
 	import { entries, formatHour } from '$lib/app';
 
 	export let resolution: number = 2;
@@ -13,9 +13,10 @@
 	}
 </script>
 
-<section class="entry">
+<form class="entry">
 	<input type="text" placeholder="Time Entry" />
-</section>
+	<button><Check size="18px" /></button>
+</form>
 <section class="opts">
 	<span>
 		<Clock size="18px" />
@@ -49,6 +50,9 @@
 
 <style lang="scss">
 	.entry {
+		display: flex;
+		align-items: center;
+
 		input {
 			background: #011627;
 			border: none;
@@ -65,6 +69,16 @@
 			&::placeholder {
 				color: #567;
 			}
+		}
+
+		button {
+			background: transparent;
+			border: #234 1px solid;
+			border-radius: 0.25rem;
+			color: #567;
+			cursor: pointer;
+			width: 1.9rem;
+			padding: 0.25rem;
 		}
 	}
 	.opts {

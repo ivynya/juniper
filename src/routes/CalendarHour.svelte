@@ -74,6 +74,7 @@
 		$entries.push({
 			__column__: computeColumn($entries, timeA / resolution, timeB / resolution),
 			name: 'New entry',
+			project: '',
 			client: '',
 			start: timeA / resolution,
 			end: timeB / resolution,

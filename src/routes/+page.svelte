@@ -2,6 +2,7 @@
 	import Calendar from './Calendar.svelte';
 	import Header from './Header.svelte';
 	import List from './List.svelte';
+	import Report from './Report.svelte';
 
 	export let selected = 'List';
 </script>
@@ -13,7 +14,7 @@
 	{:else if selected === 'Calendar'}
 		<Calendar />
 	{:else}
-		<p>Report</p>
+		<Report />
 	{/if}
 </section>
 
