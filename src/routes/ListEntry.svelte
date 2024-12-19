@@ -15,7 +15,7 @@
 
 <article class="entry">
 	<div class="data">
-		<input type="text" bind:value={entry.name} on:keypress={upd} />
+		<input type="text" bind:value={entry.task} on:keypress={upd} />
 		<span><EntryProject {entry} on:update={upd} /></span>
 	</div>
 	<div>

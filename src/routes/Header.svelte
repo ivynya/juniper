@@ -1,12 +1,12 @@
 <script lang="ts">
-	import Viewer from './Viewer.svelte';
+	import HeaderViews from './HeaderViews.svelte';
 
 	export let selected: string;
 </script>
 
 <header>
-	<h1>FAUNA</h1>
-	<Viewer options={['Report', 'List', 'Calendar']} bind:selected />
+	<h1><span>FAUNA</span></h1>
+	<HeaderViews options={['List', 'Calendar', 'Report']} bind:selected />
 </header>
 
 <style lang="scss">
@@ -14,7 +14,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		padding: 0.5rem 2rem;
+		padding: 0.5rem 1.25rem;
 		padding-top: 0.35rem;
 
 		h1 {

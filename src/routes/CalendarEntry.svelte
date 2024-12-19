@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { Entry } from '$lib/schema';
-	import { formatHour } from '$lib/app';
+	import EntryProject from './EntryProject.svelte';
 	import { Trash } from 'lucide-svelte';
 	import { createEventDispatcher } from 'svelte';
-	import EntryProject from './EntryProject.svelte';
+	import { formatHour } from '$lib/app';
+	import type { Entry } from '$lib/schema';
 
 	const dispatch = createEventDispatcher();
 
@@ -29,7 +29,7 @@
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div class="entry" style="{_grid}; {_height}" class:editing on:mousedown={stopProp}>
 	<div class="info">
-		<input type="text" bind:value={entry.name} on:keypress={upd} />
+		<input type="text" bind:value={entry.task} on:keypress={upd} />
 		<EntryProject {entry} on:update={upd} />
 	</div>
 	<div class="opts">
@@ -57,11 +57,12 @@
 		flex-direction: column;
 		align-items: flex-start;
 		justify-content: space-between;
-		font-size: 0.8rem;
+		font-size: 0.7rem;
 		text-align: center;
-		padding: 0.5rem 0.75rem;
+		padding: 0.2rem 0.4rem;
 		position: relative;
 		z-index: 1;
+		overflow: hidden;
 
 		&.editing {
 			pointer-events: none;
@@ -77,6 +78,7 @@
 			margin: 0;
 			padding: 0;
 			outline: none;
+			flex: 1 1;
 			width: 100%;
 
 			&:focus {

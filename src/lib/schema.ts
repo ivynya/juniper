@@ -1,16 +1,23 @@
 export interface Entry {
 	__column__: number;
-	name: string;
+	task: string;
 	project: string;
 	client: string;
-	start: number;
-	end: number;
-	duration: number;
+	z_start: string; // ISO 8601 DateTime
+	z_end: string; // ISO 8601 DateTime
+	start: number; // 0-23 hours
+	end: number; // 0-23 hours
+	duration: number; // precomputed end - start
 	tags: string[];
+}
+
+export interface Project {
+	name: string;
+	color: string;
 }
 
 export interface Client {
 	name: string;
 	color: string;
-	projects: string[];
+	projects: Project[];
 }

@@ -1,11 +1,12 @@
 <script lang="ts">
-	import { Clock, Calendar, ChevronLeft, ChevronRight, MoonStar, Check } from 'lucide-svelte';
+	import { Clock, ChevronLeft, ChevronRight, MoonStar, Timer } from 'lucide-svelte';
 	import { entries, formatHour } from '$lib/app';
 
 	export let resolution: number = 2;
 	export let wakingHoursOnly: boolean = false;
 	export let showCalControls: boolean = false;
 
+	let active = false;
 	$: today = $entries.map((e) => e.duration).reduce((a, b) => a + b, 0);
 
 	function cycleResolution() {
@@ -13,9 +14,23 @@
 	}
 </script>
 
-<form class="entry">
-	<input type="text" placeholder="Time Entry" />
-	<button><Check size="18px" /></button>
+<form class="entry" class:active>
+	<input
+		type="text"
+		placeholder="What are you working on?"
+		on:focus={() => (active = true)}
+		on:blur={() => (active = false)}
+	/>
+	<select name="" id="">
+		<option value="a">EEC 100A</option>
+		<option value="a">EEC 018</option>
+		<option value="a">Cmongus</option>
+	</select>
+	<select name="" id="">
+		<option value="a">UC Davis</option>
+		<option value="a">Bevel Home</option>
+	</select>
+	<button><Timer size="16px" /></button>
 </form>
 <section class="opts">
 	<span>
@@ -28,21 +43,16 @@
 			{resolution}x
 		</button>
 		<label for="waking-hours">
-			<MoonStar size="18px" color={wakingHoursOnly ? '#345' : '#134'} />
+			<MoonStar size="18px" color={wakingHoursOnly ? '#f5fff1aa' : '#135'} />
 			<input type="checkbox" id="waking-hours" hidden bind:checked={wakingHoursOnly} />
 		</label>
-	{/if}
-	{#if showCalControls}
 		<span>
-			<Calendar size="18px" />
-			<br />
 			<span>January 1st, 2018</span>
 			<ChevronLeft size="18px" />
 			<ChevronRight size="18px" />
 		</span>
 	{:else}
 		<span>
-			<Calendar size="18px" />
 			<span>January 1st, 2018</span>
 		</span>
 	{/if}
@@ -50,19 +60,27 @@
 
 <style lang="scss">
 	.entry {
+		border: 1.5px dotted #147;
+		border-radius: 20px;
 		display: flex;
 		align-items: center;
+
+		&.active {
+			border: 1.5px dotted #269;
+		}
 
 		input {
 			background: #011627;
 			border: none;
-			border-radius: 0.125rem;
+			border-top-left-radius: 20px;
+			border-bottom-left-radius: 20px;
 			box-sizing: border-box;
 			color: #f5fff1;
 			font-family: inherit;
-			font-size: 0.8rem;
+			font-size: 0.7rem;
 			margin: 0;
-			padding: 0.25rem 0;
+			padding: 0.35rem 0;
+			padding-left: 15px;
 			width: 100%;
 			outline: none;
 
@@ -71,22 +89,61 @@
 			}
 		}
 
-		button {
-			background: transparent;
-			border: #234 1px solid;
-			border-radius: 0.25rem;
+		select {
+			appearance: none;
+			background: none;
+			border: none;
+			border-left: 1.5px dotted #147;
+			border-radius: 0;
 			color: #567;
 			cursor: pointer;
-			width: 1.9rem;
-			padding: 0.25rem;
+			font-family: inherit;
+			font-size: 0.7rem;
+			margin: -1px 0;
+			padding: 0.35rem 0.5rem;
+			outline: none;
+			width: 100%;
+			max-width: 50px;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			overflow: hidden;
+		}
+
+		select:first-of-type {
+			color: #0af;
+			max-width: 75px;
+		}
+
+		button {
+			background: transparent;
+			border: none;
+			border-left: 1.5px dotted #147;
+			border-radius: 20px;
+			border-bottom-left-radius: 0;
+			border-top-left-radius: 0;
+			color: #567;
+			cursor: pointer;
+			display: grid;
+			place-items: center;
+			width: 3rem;
+			padding: 0.35rem;
+			padding-right: 0.5rem;
+
+			&:hover {
+				color: #f5fff1;
+			}
 		}
 	}
+
 	.opts {
 		background-color: #011627;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 		gap: 1rem;
+		height: 25px;
+		margin-top: 0.55rem;
+		margin-bottom: 0.25rem;
 		padding-bottom: 0.5rem;
 		position: sticky;
 		top: 0;
@@ -97,11 +154,11 @@
 		}
 
 		span {
-			color: #567;
+			color: #f5fff1aa;
 			display: flex;
 			align-items: center;
 			gap: 0.5rem;
-			font-size: 0.8rem;
+			font-size: 0.7rem;
 		}
 
 		label {
@@ -114,7 +171,7 @@
 			background: transparent;
 			border: none;
 			border-radius: 0.25rem;
-			color: #134;
+			color: #f5fff1aa;
 			cursor: pointer;
 			font-family: inherit;
 			font-size: 0.8rem;

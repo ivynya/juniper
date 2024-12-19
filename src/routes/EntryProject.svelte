@@ -1,10 +1,12 @@
 <script lang="ts">
+	import { clients } from '$lib/app';
 	import type { Entry } from '$lib/schema';
 	import { createEventDispatcher } from 'svelte';
 
 	const dispatch = createEventDispatcher();
 
 	export let entry: Entry;
+	$: client = $clients.find((c) => c.name === entry.client) || { projects: [] };
 
 	function upd() {
 		dispatch('update', entry);
@@ -13,11 +15,15 @@
 
 <span>
 	<select bind:value={entry.project} on:change={upd}>
-		<option value="etc">etc</option>
+		{#each client.projects as project}
+			<option value={project.name}>{project.name}</option>
+		{/each}
 	</select>
 	•
 	<select bind:value={entry.client} on:change={upd}>
-		<option value="etc">etc</option>
+		{#each $clients as client}
+			<option value={client.name}>{client.name}</option>
+		{/each}
 	</select>
 </span>
 
@@ -28,13 +34,13 @@
 		align-items: center;
 		gap: 0.5rem;
 		font-size: 0.7rem;
-		width: fit-content;
 	}
 
 	select {
 		appearance: none;
 		background-color: transparent;
 		border: none;
+		border-bottom: 1px dashed transparent;
 		border-radius: 0;
 		color: inherit;
 		font-family: inherit;
@@ -42,7 +48,11 @@
 		margin: 0;
 		padding: 0;
 		outline: none;
-		width: 100%;
+
+		&:hover {
+			border-bottom: 1px dashed #567;
+			cursor: pointer;
+		}
 
 		&:focus {
 			border-bottom: 1px dashed #fff;

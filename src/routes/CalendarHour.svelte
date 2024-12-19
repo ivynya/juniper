@@ -23,8 +23,11 @@
 		}),
 		{
 			__column__: computeColumn($entries, timeA / resolution, timeB / resolution),
-			name: 'New entry',
+			task: 'New entry',
+			project: '',
 			client: '',
+			z_start: '',
+			z_end: '',
 			start: timeA / resolution,
 			end: timeB / resolution,
 			duration: Math.abs(timeB - timeA) / resolution,
@@ -73,9 +76,11 @@
 		}
 		$entries.push({
 			__column__: computeColumn($entries, timeA / resolution, timeB / resolution),
-			name: 'New entry',
+			task: 'New entry',
 			project: '',
 			client: '',
+			z_start: '',
+			z_end: '',
 			start: timeA / resolution,
 			end: timeB / resolution,
 			duration: Math.abs(timeB - timeA) / resolution,

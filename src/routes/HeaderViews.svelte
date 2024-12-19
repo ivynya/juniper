@@ -1,7 +1,7 @@
 <script lang="ts">
 	export let options: string[];
 	export let selected: string;
-	$: active = options.findIndex((o) => o === selected);
+	$: active = Math.abs(options.findIndex((o) => o === selected));
 	$: ratchet = 100 / options.length;
 	$: leftness = active * 100;
 </script>
@@ -19,9 +19,9 @@
 
 <style lang="scss">
 	.slider {
-		border: 2px dotted #135;
-		border-radius: 2px;
-		transition-duration: 0.5s;
+		border: 1.5px dotted #147;
+		border-radius: 15px;
+		transition-duration: 0.3s;
 		height: 18px;
 		padding: 5px 0;
 		position: relative;
@@ -30,8 +30,8 @@
 		span {
 			box-sizing: border-box;
 			border: 2px solid;
-			border-radius: 2px;
-			transition-duration: 0.5s;
+			border-radius: 15px;
+			transition-duration: 0.3s;
 			display: block;
 			height: 30px;
 			margin: auto 0;
