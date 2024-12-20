@@ -18,8 +18,13 @@
 		<input type="text" bind:value={entry.task} on:keypress={upd} />
 		<span><EntryProject {entry} on:update={upd} /></span>
 	</div>
-	<div>
+	<div class="meta">
 		<span>{formatHour(entry.duration)}</span>
+		<span>
+			{#each entry.tags as tag}
+				{tag}
+			{/each}
+		</span>
 	</div>
 </article>
 
@@ -33,6 +38,22 @@
 		height: 4rem;
 		padding: 0.75rem 1rem;
 		width: 100%;
+
+		div {
+			display: flex;
+			flex-direction: column;
+		}
+
+		.meta {
+			align-items: flex-end;
+		}
+		.meta span:last-of-type {
+			color: #fff8;
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+			font-size: 0.7rem;
+		}
 	}
 
 	input {

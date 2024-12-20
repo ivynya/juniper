@@ -1,11 +1,14 @@
 <script lang="ts">
 	import CalendarHour from './CalendarHour.svelte';
 	import Input from './Input.svelte';
+	import { entries } from '$lib/app';
 
 	let resolution = 2;
 	let wakingHoursOnly = false;
+	let todayDate: string;
 
 	$: hours = wakingHoursOnly ? Array(18 * resolution) : Array(24 * resolution);
+	$: today = $entries.filter((e) => new Date(e.z_start).toDateString() === todayDate);
 
 	let isDragging = false;
 	let timeA = -1;
@@ -17,7 +20,7 @@
 	}
 </script>
 
-<Input bind:resolution bind:wakingHoursOnly showCalControls />
+<Input bind:resolution bind:wakingHoursOnly bind:todayDate showCalControls />
 <section>
 	{#each hours.reverse() as _, i (i)}
 		<CalendarHour
@@ -26,6 +29,7 @@
 			bind:timeB
 			bind:timeP
 			bind:resolution
+			bind:entries={today}
 			i={adjustHour(i)}
 		/>
 	{/each}

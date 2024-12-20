@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Entry } from '$lib/schema';
-	import { entries, formatHour } from '$lib/app';
+	import { formatHour, computeColumn } from '$lib/app';
 	import CalendarEntry from './CalendarEntry.svelte';
 
 	export let isDragging: boolean;
@@ -9,20 +9,21 @@
 	export let timeP: number;
 	export let i: number;
 	export let resolution: number;
+	export let entries: Entry[];
 
 	$: height = 35 - resolution * 5;
 	$: naptime = i / resolution < 6 || i / resolution == 23;
 	$: highlighted = isDragging && i >= timeA && i <= timeB;
 
 	$: renderedEntries = [
-		...$entries.map((e, i) => {
+		...entries.map((e, i) => {
 			return {
 				...e,
-				__column__: computeColumn($entries.slice(0, i), e.start, e.end)
+				__column__: computeColumn(entries.slice(0, i), e.start, e.end)
 			};
 		}),
 		{
-			__column__: computeColumn($entries, timeA / resolution, timeB / resolution),
+			__column__: computeColumn(entries, timeA / resolution, timeB / resolution),
 			task: 'New entry',
 			project: '',
 			client: '',
@@ -36,24 +37,11 @@
 	];
 	$: cols = Math.max(...renderedEntries.map((e) => e.__column__)) + 1;
 
-	function computeColumn(entries: Entry[], start: number, end: number): number {
-		const conflicting = entries
-			.filter((e) => {
-				return (
-					(e.start < end && e.start >= start) ||
-					(e.end <= end && e.end > start) ||
-					(e.start <= start && e.end >= end)
-				);
-			})
-			.map((e) => e.__column__);
-		return [0, 1, 2, 3, 4, 5, 6].filter((i) => !conflicting.includes(i)).at(0) || 0;
-	}
-
 	function deleteEntry(i: number) {
-		$entries = $entries.filter((_, j) => j !== i).filter((e) => e.duration > 0);
+		entries = entries.filter((_, j) => j !== i).filter((e) => e.duration > 0);
 	}
 	function updateEntry(i: number, n: Entry) {
-		$entries = $entries.map((e, j) => (j === i ? n : e));
+		entries = entries.map((e, j) => (j === i ? n : e));
 	}
 
 	function mouseDown(h: number) {
@@ -74,8 +62,8 @@
 			timeA = timeB = timeP = -1;
 			return;
 		}
-		$entries.push({
-			__column__: computeColumn($entries, timeA / resolution, timeB / resolution),
+		entries.push({
+			__column__: computeColumn(entries, timeA / resolution, timeB / resolution),
 			task: 'New entry',
 			project: '',
 			client: '',
@@ -86,7 +74,7 @@
 			duration: Math.abs(timeB - timeA) / resolution,
 			tags: []
 		});
-		$entries = $entries;
+		entries = entries;
 
 		isDragging = false;
 		timeA = timeB = timeP = -1;

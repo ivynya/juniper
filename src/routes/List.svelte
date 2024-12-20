@@ -6,7 +6,7 @@
 
 	$: groups = $entries.reduce(
 		(acc, entry) => {
-			const date = new Date(entry.start);
+			const date = new Date(entry.z_start);
 			const key = date.toDateString();
 			if (!acc[key]) acc[key] = [];
 			acc[key].push(entry);

@@ -5,12 +5,21 @@
 	export let resolution: number = 2;
 	export let wakingHoursOnly: boolean = false;
 	export let showCalControls: boolean = false;
+	export let todayDate: string = new Date().toDateString();
 
+	let todayOffset: number = 0;
 	let active = false;
-	$: today = $entries.map((e) => e.duration).reduce((a, b) => a + b, 0);
+	$: total = $entries.map((e) => e.duration).reduce((a, b) => a + b, 0);
 
 	function cycleResolution() {
 		resolution = (resolution % 4) * 2 || 1;
+	}
+
+	function recalculateToday(delta: number) {
+		todayOffset += delta;
+		const today = new Date();
+		today.setDate(today.getDate() + todayOffset);
+		todayDate = today.toDateString();
 	}
 </script>
 
@@ -35,7 +44,7 @@
 <section class="opts">
 	<span>
 		<Clock size="18px" />
-		{formatHour(today)} today
+		{formatHour(total)} today
 	</span>
 	<span class="spacer" />
 	{#if showCalControls}
@@ -46,15 +55,15 @@
 			<MoonStar size="18px" color={wakingHoursOnly ? '#f5fff1aa' : '#135'} />
 			<input type="checkbox" id="waking-hours" hidden bind:checked={wakingHoursOnly} />
 		</label>
-		<span>
-			<span>January 1st, 2018</span>
+		<span>{todayDate}</span>
+		<button on:click={() => recalculateToday(-1)}>
 			<ChevronLeft size="18px" />
+		</button>
+		<button on:click={() => recalculateToday(1)}>
 			<ChevronRight size="18px" />
-		</span>
+		</button>
 	{:else}
-		<span>
-			<span>January 1st, 2018</span>
-		</span>
+		<span>{todayDate}</span>
 	{/if}
 </section>
 
@@ -173,6 +182,8 @@
 			border-radius: 0.25rem;
 			color: #f5fff1aa;
 			cursor: pointer;
+			display: grid;
+			place-items: center;
 			font-family: inherit;
 			font-size: 0.8rem;
 			margin: 0;

@@ -59,7 +59,8 @@
 		justify-content: space-between;
 		font-size: 0.7rem;
 		text-align: center;
-		padding: 0.2rem 0.4rem;
+		padding: 0.2rem 0.3rem;
+		padding-bottom: 0.1rem;
 		position: relative;
 		z-index: 1;
 		overflow: hidden;
@@ -100,7 +101,7 @@
 
 			span {
 				color: #fff8;
-				font-size: 0.7rem;
+				font-size: 0.6rem;
 			}
 
 			button {

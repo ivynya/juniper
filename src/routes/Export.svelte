@@ -20,10 +20,9 @@
 				raw = content.split('\n').map((line) => line.split(','));
 				const parse = parseCSV(content);
 				data = parse.entries;
-				data = data.map((e) => {
-					e.__column__ = computeColumn(data, e.start, e.end);
-					return e;
-				});
+				for (let i = 0; i < data.length; i++) {
+					data[i].__column__ = computeColumn(data, data[i].start, data[i].end);
+				}
 				entries.set(data);
 				clients.set(parse.clients);
 			};
