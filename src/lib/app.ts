@@ -38,11 +38,7 @@ export function computeColumn(entries: Entry[], start: number, end: number): num
 			);
 		})
 		.map((e) => e.__column__);
-	return (
-		[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
-			.filter((i) => !conflicting.includes(i))
-			.at(0) || 0
-	);
+	return [0, 1, 2, 3, 4, 5, 6, 7, 8].filter((i) => !conflicting.includes(i)).at(0) || 0;
 }
 
 export function formatHour(hour: number): string {

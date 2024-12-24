@@ -37,6 +37,7 @@
 	<h3>PROJECTS</h3>
 
 	<h3>STORAGE</h3>
+	<p>last saved: {new Date(window.localStorage.getItem('time') || '').toUTCString()}</p>
 	<p>{JSON.parse(window.localStorage.getItem('data') || '[]').length} entries</p>
 	<p>{JSON.parse(window.localStorage.getItem('meta') || '[]').length} clients</p>
 	<button on:click={() => resetStorage()}>Reset Storage</button>

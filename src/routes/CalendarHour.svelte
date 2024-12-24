@@ -1,7 +1,8 @@
 <script lang="ts">
-	import type { Entry } from '$lib/schema';
-	import { formatHour, computeColumn } from '$lib/app';
 	import CalendarEntry from './CalendarEntry.svelte';
+	import { entries, formatHour, computeColumn } from '$lib/app';
+	import { createEventDispatcher } from 'svelte';
+	import type { Entry } from '$lib/schema';
 
 	export let isDragging: boolean;
 	export let timeA: number;
@@ -9,21 +10,22 @@
 	export let timeP: number;
 	export let i: number;
 	export let resolution: number;
-	export let entries: Entry[];
+	export let todayDate: string;
 
+	$: today = $entries.filter((e) => new Date(e.z_start).toDateString() === todayDate);
 	$: height = 30 - resolution * 5;
 	$: naptime = i / resolution < 6 || i / resolution == 23;
 	$: highlighted = isDragging && i >= timeA && i <= timeB;
 
 	$: renderedEntries = [
-		...entries.map((e, i) => {
+		...today.map((e, i) => {
 			return {
 				...e,
-				__column__: computeColumn(entries.slice(0, i), e.start, e.end)
+				__column__: computeColumn(today.slice(0, i), e.start, e.end)
 			};
 		}),
 		{
-			__column__: computeColumn(entries, timeA / resolution, timeB / resolution),
+			__column__: computeColumn(today, timeA / resolution, timeB / resolution),
 			task: 'New entry',
 			project: '',
 			client: '',
@@ -38,10 +40,12 @@
 	$: cols = Math.max(...renderedEntries.map((e) => e.__column__)) + 1;
 
 	function deleteEntry(i: number) {
-		entries = entries.filter((_, j) => j !== i).filter((e) => e.duration > 0);
+		const globalIndex = $entries.indexOf(today[i]);
+		$entries = $entries.filter((_, j) => j !== globalIndex).filter((e) => e.duration > 0);
 	}
 	function updateEntry(i: number, n: Entry) {
-		entries = entries.map((e, j) => (j === i ? n : e));
+		const globalIndex = $entries.indexOf(today[i]);
+		$entries = $entries.map((e, j) => (j === globalIndex ? n : e));
 	}
 
 	function mouseDown(h: number) {
@@ -62,19 +66,34 @@
 			timeA = timeB = timeP = -1;
 			return;
 		}
-		entries.push({
-			__column__: computeColumn(entries, timeA / resolution, timeB / resolution),
+
+		$entries.push({
+			__column__: computeColumn(today, timeA / resolution, timeB / resolution),
 			task: 'New entry',
 			project: '',
 			client: '',
-			z_start: '',
-			z_end: '',
+			z_start: new Date(
+				new Date(todayDate).setHours(
+					Math.floor(timeA / resolution),
+					((timeA / resolution) % 1) * 60,
+					0,
+					0
+				)
+			).toISOString(),
+			z_end: new Date(
+				new Date(todayDate).setHours(
+					Math.floor(timeB / resolution),
+					((timeB / resolution) % 1) * 60,
+					0,
+					0
+				)
+			).toISOString(),
 			start: timeA / resolution,
 			end: timeB / resolution,
 			duration: Math.abs(timeB - timeA) / resolution,
 			tags: []
 		});
-		entries = entries;
+		$entries = $entries;
 
 		isDragging = false;
 		timeA = timeB = timeP = -1;

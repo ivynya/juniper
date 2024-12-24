@@ -43,7 +43,7 @@
 		background-image: radial-gradient(circle, #0001 1px, transparent 1px);
 		background-size: 8px 8px;
 		background-color: var(--b3);
-		border: 1px solid var(--a1);
+		border: 1px solid var(--b2);
 		border-radius: 0.25rem;
 		box-sizing: border-box;
 		color: var(--a2);

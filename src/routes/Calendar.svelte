@@ -8,7 +8,6 @@
 	let todayDate: string;
 
 	$: hours = wakingHoursOnly ? Array(18 * resolution) : Array(24 * resolution);
-	$: today = $entries.filter((e) => new Date(e.z_start).toDateString() === todayDate);
 
 	let isDragging = false;
 	let timeA = -1;
@@ -29,7 +28,7 @@
 			bind:timeB
 			bind:timeP
 			bind:resolution
-			bind:entries={today}
+			bind:todayDate
 			i={adjustHour(i)}
 		/>
 	{/each}
