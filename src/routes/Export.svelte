@@ -32,6 +32,9 @@
 </script>
 
 <section>
+	<h3>CLIENTS</h3>
+	<h3>PROJECTS</h3>
+
 	<h3>IMPORT</h3>
 	<input type="file" accept=".csv" on:change={handleFileUpload} />
 	<pre>{JSON.stringify(raw, null, 2)}</pre>
@@ -40,8 +43,7 @@
 
 <style lang="scss">
 	h3 {
-		border: 1.5px dotted #147;
-		border-radius: 20px;
-		padding: 0 1rem;
+		border-bottom: 1px dotted var(--a1);
+		color: var(--a1);
 	}
 </style>

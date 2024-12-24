@@ -12,14 +12,14 @@
 
 <style lang="scss">
 	.group {
-		background-color: #fff1;
+		background-color: var(--b1);
 		border-radius: 0.5rem;
 		display: flex;
 		flex-direction: column;
 		width: 100%;
 
 		h6 {
-			color: #567;
+			color: var(--b2);
 			display: flex;
 			justify-content: space-between;
 			font-size: 0.8rem;

@@ -30,7 +30,7 @@
 
 <style lang="scss">
 	.entry {
-		border-top: 1px solid #234;
+		border-top: 1px dotted var(--b2);
 		box-sizing: border-box;
 		display: flex;
 		justify-content: space-between;
@@ -48,7 +48,7 @@
 			align-items: flex-end;
 		}
 		.meta span:last-of-type {
-			color: #fff8;
+			color: var(--b3);
 			display: flex;
 			align-items: center;
 			gap: 0.5rem;
@@ -61,7 +61,7 @@
 		border: none;
 		border-radius: 0.125rem;
 		box-sizing: border-box;
-		color: #f5fff1;
+		color: var(--a2);
 		font-family: inherit;
 		font-size: 0.8rem;
 		margin: 0;
@@ -70,7 +70,7 @@
 		outline: none;
 
 		&::placeholder {
-			color: #567;
+			color: var(--b2);
 		}
 	}
 </style>

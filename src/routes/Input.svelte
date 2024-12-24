@@ -35,10 +35,6 @@
 		<option value="a">EEC 018</option>
 		<option value="a">Cmongus</option>
 	</select>
-	<select name="" id="">
-		<option value="a">UC Davis</option>
-		<option value="a">Bevel Home</option>
-	</select>
 	<button><Timer size="16px" /></button>
 </form>
 <section class="opts">
@@ -52,7 +48,7 @@
 			{resolution}x
 		</button>
 		<label for="waking-hours">
-			<MoonStar size="18px" color={wakingHoursOnly ? '#f5fff1aa' : '#135'} />
+			<MoonStar size="18px" color={wakingHoursOnly ? 'var(--b4)' : 'var(--b2)'} />
 			<input type="checkbox" id="waking-hours" hidden bind:checked={wakingHoursOnly} />
 		</label>
 		<span>{todayDate}</span>
@@ -69,22 +65,21 @@
 
 <style lang="scss">
 	.entry {
-		border: 1.5px dotted #147;
-		border-radius: 20px;
 		display: flex;
 		align-items: center;
 
-		&.active {
-			border: 1.5px dotted #269;
+		&.active input {
+			border: 1px dotted var(--b3);
 		}
 
 		input {
-			background: #011627;
+			background: transparent;
 			border: none;
+			border: 1px dotted var(--b2);
 			border-top-left-radius: 20px;
 			border-bottom-left-radius: 20px;
 			box-sizing: border-box;
-			color: #f5fff1;
+			color: inherit;
 			font-family: inherit;
 			font-size: 0.7rem;
 			margin: 0;
@@ -94,21 +89,23 @@
 			outline: none;
 
 			&::placeholder {
-				color: #567;
+				color: var(--b2);
 			}
 		}
 
 		select {
 			appearance: none;
 			background: none;
-			border: none;
-			border-left: 1.5px dotted #147;
+			border: 1px dotted var(--b2);
+			border-left: none;
 			border-radius: 0;
-			color: #567;
+			border-top-right-radius: 20px;
+			border-bottom-right-radius: 20px;
+			color: var(--b2);
 			cursor: pointer;
 			font-family: inherit;
 			font-size: 0.7rem;
-			margin: -1px 0;
+			margin-right: 10px;
 			padding: 0.35rem 0.5rem;
 			outline: none;
 			width: 100%;
@@ -125,27 +122,24 @@
 
 		button {
 			background: transparent;
-			border: none;
-			border-left: 1.5px dotted #147;
+			border: 1px dotted var(--b2);
 			border-radius: 20px;
-			border-bottom-left-radius: 0;
-			border-top-left-radius: 0;
-			color: #567;
+			color: var(--b2);
 			cursor: pointer;
 			display: grid;
 			place-items: center;
-			width: 3rem;
+			width: 2.75rem;
 			padding: 0.35rem;
-			padding-right: 0.5rem;
 
 			&:hover {
-				color: #f5fff1;
+				border-color: var(--b3);
+				color: var(--a2);
 			}
 		}
 	}
 
 	.opts {
-		background-color: #011627;
+		background-color: var(--b0);
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
@@ -163,7 +157,7 @@
 		}
 
 		span {
-			color: #f5fff1aa;
+			color: var(--b4);
 			display: flex;
 			align-items: center;
 			gap: 0.5rem;
@@ -180,7 +174,7 @@
 			background: transparent;
 			border: none;
 			border-radius: 0.25rem;
-			color: #f5fff1aa;
+			color: var(--b4);
 			cursor: pointer;
 			display: grid;
 			place-items: center;

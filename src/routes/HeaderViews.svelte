@@ -19,7 +19,7 @@
 
 <style lang="scss">
 	.slider {
-		border: 1.5px dotted #147;
+		border: 1px dotted var(--b2);
 		border-radius: 15px;
 		transition-duration: 0.3s;
 		height: 18px;
@@ -70,7 +70,7 @@
 			transition-duration: 0.2s;
 
 			&:not(.active) {
-				opacity: 0.5;
+				color: var(--b3);
 			}
 		}
 	}

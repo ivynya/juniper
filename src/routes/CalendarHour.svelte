@@ -11,7 +11,7 @@
 	export let resolution: number;
 	export let entries: Entry[];
 
-	$: height = 35 - resolution * 5;
+	$: height = 30 - resolution * 5;
 	$: naptime = i / resolution < 6 || i / resolution == 23;
 	$: highlighted = isDragging && i >= timeA && i <= timeB;
 
@@ -119,22 +119,14 @@
 		display: flex;
 		align-items: flex-start;
 		font-family: inherit;
-		font-size: 0.8rem;
+		font-size: 0.7rem;
 		padding: 0;
 		height: 30px;
 		width: 100%;
 		position: relative;
 
-		&.naptime .row {
-			.label,
-			hr {
-				border-color: #135;
-				color: #135;
-			}
-		}
-
 		&.highlighted .row .label {
-			color: #fff;
+			color: var(--a1);
 		}
 
 		.row {
@@ -144,12 +136,12 @@
 			width: 100%;
 
 			.label {
-				color: #345;
+				color: var(--b2);
 			}
 
 			> hr {
 				border: none;
-				border-top: 1px solid #234;
+				border-top: 1px solid var(--b1);
 				flex: 1;
 				margin: auto 0;
 				width: 100%;

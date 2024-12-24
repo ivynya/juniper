@@ -29,7 +29,7 @@
 
 <style lang="scss">
 	span {
-		color: #fff8;
+		color: var(--b3);
 		display: flex;
 		align-items: center;
 		gap: 0.5rem;
@@ -50,12 +50,12 @@
 		outline: none;
 
 		&:hover {
-			border-bottom: 1px dashed #567;
+			border-bottom: 1px dashed var(--b3);
 			cursor: pointer;
 		}
 
 		&:focus {
-			border-bottom: 1px dashed #fff;
+			border-bottom: 1px dashed var(--a3);
 		}
 	}
 </style>

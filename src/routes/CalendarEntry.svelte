@@ -40,18 +40,13 @@
 
 <style lang="scss">
 	.entry {
-		background: repeating-linear-gradient(
-			-60deg,
-			#0001,
-			#0001 1px,
-			transparent 1px,
-			transparent 8px
-		);
-		background-color: #453;
-		border: 1px solid #0003;
+		background-image: radial-gradient(circle, #0001 1px, transparent 1px);
+		background-size: 8px 8px;
+		background-color: var(--b3);
+		border: 1px solid var(--a1);
 		border-radius: 0.25rem;
 		box-sizing: border-box;
-		color: #fff;
+		color: var(--a2);
 		cursor: initial;
 		display: flex;
 		flex-direction: column;
@@ -100,14 +95,14 @@
 			width: 100%;
 
 			span {
-				color: #fff8;
+				color: var(--b2);
 				font-size: 0.6rem;
 			}
 
 			button {
 				background: transparent;
 				border: none;
-				color: #123;
+				color: var(--b2);
 				cursor: pointer;
 				font-size: inherit;
 				margin: 0;
