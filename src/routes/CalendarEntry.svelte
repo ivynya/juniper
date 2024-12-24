@@ -28,9 +28,9 @@
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div class="entry" style="{_grid}; {_height}" class:editing on:mousedown={stopProp}>
-	<div class="info">
-		<input type="text" bind:value={entry.task} on:keypress={upd} />
-		<EntryProject {entry} on:update={upd} />
+	<div class="data">
+		<span>{entry.task}</span>
+		<span>{entry.project} • {entry.client}</span>
 	</div>
 	<div class="opts">
 		<span>{formatHour(entry.duration)}</span>
@@ -64,29 +64,16 @@
 			pointer-events: none;
 		}
 
-		input {
-			appearance: none;
-			background-color: transparent;
-			border: none;
-			color: inherit;
-			font-family: inherit;
-			font-size: inherit;
-			margin: 0;
-			padding: 0;
-			outline: none;
-			flex: 1 1;
-			width: 100%;
-
-			&:focus {
-				border-bottom: 1px dashed #fff;
-			}
-		}
-
-		.info {
+		.data {
 			display: flex;
-			justify-content: space-between;
-			gap: 0.5rem;
-			width: 100%;
+			flex-direction: column;
+			align-items: flex-start;
+
+			span:last-child {
+				color: #0005;
+				font-size: 0.7rem;
+				white-space: nowrap;
+			}
 		}
 
 		.opts {
@@ -95,21 +82,21 @@
 			width: 100%;
 
 			span {
-				color: var(--b2);
-				font-size: 0.6rem;
+				color: #0005;
+				font-size: 0.7rem;
 			}
 
 			button {
 				background: transparent;
 				border: none;
-				color: var(--b2);
+				color: #0005;
 				cursor: pointer;
 				font-size: inherit;
 				margin: 0;
 				padding: 0;
 
 				&:hover {
-					color: #f53;
+					color: var(--a2);
 				}
 			}
 		}

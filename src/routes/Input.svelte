@@ -1,15 +1,18 @@
 <script lang="ts">
 	import { Clock, ChevronLeft, ChevronRight, MoonStar, Timer } from 'lucide-svelte';
 	import { entries, formatHour } from '$lib/app';
+	import type { Entry } from '$lib/schema';
 
 	export let resolution: number = 2;
 	export let wakingHoursOnly: boolean = false;
 	export let showCalControls: boolean = false;
 	export let todayDate: string = new Date().toDateString();
 
+	let today: Entry[] = $entries.filter((e) => new Date(e.z_start).toDateString() === todayDate);
 	let todayOffset: number = 0;
 	let active = false;
-	$: total = $entries.map((e) => e.duration).reduce((a, b) => a + b, 0);
+
+	$: total = today.map((e) => e.duration).reduce((a, b) => a + b, 0);
 
 	function cycleResolution() {
 		resolution = (resolution % 4) * 2 || 1;

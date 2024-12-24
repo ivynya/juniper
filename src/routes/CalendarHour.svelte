@@ -1,6 +1,6 @@
 <script lang="ts">
 	import CalendarEntry from './CalendarEntry.svelte';
-	import { entries, formatHour, computeColumn } from '$lib/app';
+	import { entries, clients, formatHour, computeColumn } from '$lib/app';
 	import { createEventDispatcher } from 'svelte';
 	import type { Entry } from '$lib/schema';
 
@@ -27,8 +27,8 @@
 		{
 			__column__: computeColumn(today, timeA / resolution, timeB / resolution),
 			task: 'New entry',
-			project: '',
-			client: '',
+			project: $clients[0].projects[0].name,
+			client: $clients[0].name,
 			z_start: '',
 			z_end: '',
 			start: timeA / resolution,
@@ -70,8 +70,8 @@
 		$entries.push({
 			__column__: computeColumn(today, timeA / resolution, timeB / resolution),
 			task: 'New entry',
-			project: '',
-			client: '',
+			project: $clients[0].projects[0].name,
+			client: $clients[0].name,
 			z_start: new Date(
 				new Date(todayDate).setHours(
 					Math.floor(timeA / resolution),

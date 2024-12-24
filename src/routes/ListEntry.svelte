@@ -1,22 +1,17 @@
 <script lang="ts">
+	import { createEventDispatcher } from 'svelte';
 	import { formatHour } from '$lib/app';
 	import type { Entry } from '$lib/schema';
-	import { createEventDispatcher } from 'svelte';
-	import EntryProject from './EntryProject.svelte';
 
 	const dispatch = createEventDispatcher();
 
 	export let entry: Entry;
-
-	function upd() {
-		dispatch('update', entry);
-	}
 </script>
 
 <article class="entry">
 	<div class="data">
-		<input type="text" bind:value={entry.task} on:keypress={upd} />
-		<span><EntryProject {entry} on:update={upd} /></span>
+		<span>{entry.task}</span>
+		<span>{entry.project} • {entry.client}</span>
 	</div>
 	<div class="meta">
 		<span>{formatHour(entry.duration)}</span>
@@ -44,6 +39,11 @@
 			flex-direction: column;
 		}
 
+		.data span:last-child {
+			color: var(--b3);
+			font-size: 0.7rem;
+		}
+
 		.meta {
 			align-items: flex-end;
 		}
@@ -53,24 +53,6 @@
 			align-items: center;
 			gap: 0.5rem;
 			font-size: 0.7rem;
-		}
-	}
-
-	input {
-		background-color: transparent;
-		border: none;
-		border-radius: 0.125rem;
-		box-sizing: border-box;
-		color: var(--a2);
-		font-family: inherit;
-		font-size: 0.8rem;
-		margin: 0;
-		padding: 0;
-		width: 100%;
-		outline: none;
-
-		&::placeholder {
-			color: var(--b2);
 		}
 	}
 </style>
