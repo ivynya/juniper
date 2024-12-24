@@ -1,4 +1,21 @@
 <script lang="ts">
+	import { entries, clients } from '$lib/app';
+	import { loadData, saveData, saveMeta } from '$lib/data';
+	import { onMount } from 'svelte';
+
+	onMount(() => {
+		const load = loadData();
+		if (load.entries) $entries = load.entries;
+		if (load.clients) $clients = load.clients;
+		entries.subscribe((value) => {
+			console.log(value);
+			saveData(value);
+		});
+		clients.subscribe((value) => {
+			console.log(value);
+			saveMeta(value);
+		});
+	});
 </script>
 
 <div id="app">

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { entries, clients, computeColumn } from '$lib/app';
 	import { parseCSV } from '$lib/csv';
+	import { resetStorage } from '$lib/data';
 	import type { Entry } from '$lib/schema';
 
 	let raw: string[][] = [];
@@ -35,6 +36,11 @@
 	<h3>CLIENTS</h3>
 	<h3>PROJECTS</h3>
 
+	<h3>STORAGE</h3>
+	<p>{JSON.parse(window.localStorage.getItem('data') || '[]').length} entries</p>
+	<p>{JSON.parse(window.localStorage.getItem('meta') || '[]').length} clients</p>
+	<button on:click={() => resetStorage()}>Reset Storage</button>
+
 	<h3>IMPORT</h3>
 	<input type="file" accept=".csv" on:change={handleFileUpload} />
 	<pre>{JSON.stringify(raw, null, 2)}</pre>
@@ -45,5 +51,11 @@
 	h3 {
 		border-bottom: 1px dotted var(--a1);
 		color: var(--a1);
+	}
+
+	p {
+		color: var(--a2);
+		font-size: 0.8rem;
+		margin: 0;
 	}
 </style>
