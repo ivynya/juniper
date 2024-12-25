@@ -29,9 +29,9 @@ export function parseCSV(csv: string): ParseResult {
 			client: row[header.indexOf('Client')],
 			z_start: z_start,
 			z_end: z_end,
-			start: Math.round(start * 100) / 100,
-			end: Math.round(end * 100) / 100,
-			duration: Math.round((end - start) * 100) / 100,
+			start: Math.round(start * 1e6) / 1e6,
+			end: Math.round(end * 1e6) / 1e6,
+			duration: Math.round((end - start) * 1e6) / 1e6,
 			tags: row[header.indexOf('Tags')].split(',').map((tag) => tag.trim())
 		};
 		return entry;

@@ -1,7 +1,6 @@
 <script lang="ts">
-	import EntryProject from './EntryProject.svelte';
-	import { Trash } from 'lucide-svelte';
 	import { createEventDispatcher } from 'svelte';
+	import { Trash } from 'lucide-svelte';
 	import { formatHour } from '$lib/app';
 	import type { Entry } from '$lib/schema';
 

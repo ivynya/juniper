@@ -1,9 +1,13 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import { formatHour } from '$lib/app';
+	import { clients, formatHour } from '$lib/app';
+	import { Kanban, Layers } from 'lucide-svelte';
 	import type { Entry } from '$lib/schema';
 
 	const dispatch = createEventDispatcher();
+
+	$: client = $clients.find((c) => c.name === entry.client) || { color: 'var(--b3)', projects: [] };
+	$: project = client.projects.find((p) => p.name === entry.project) || { color: 'var(--b3)' };
 
 	export let entry: Entry;
 </script>
@@ -11,7 +15,10 @@
 <article class="entry">
 	<div class="data">
 		<span>{entry.task}</span>
-		<span>{entry.project} • {entry.client}</span>
+		<span>
+			<Layers size="12px" color={project.color} />{entry.project} •
+			<Kanban size="12px" color={client.color} />{entry.client}
+		</span>
 	</div>
 	<div class="meta">
 		<span>{formatHour(entry.duration)}</span>
@@ -41,6 +48,9 @@
 
 		.data span:last-child {
 			color: var(--b3);
+			display: flex;
+			align-items: center;
+			gap: 0.3rem;
 			font-size: 0.7rem;
 		}
 
