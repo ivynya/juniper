@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Clock, ChevronLeft, ChevronRight, MoonStar, Timer } from 'lucide-svelte';
-	import { entries, formatHour } from '$lib/app';
+	import { entries, clients, formatHour } from '$lib/app';
 	import type { Entry } from '$lib/schema';
 
 	export let resolution: number = 2;
@@ -11,6 +11,11 @@
 	let today: Entry[] = $entries.filter((e) => new Date(e.z_start).toDateString() === todayDate);
 	let todayOffset: number = 0;
 	let active = false;
+
+	let clientProject: string = '';
+	$: [clientName, projectName] = clientProject.split(',');
+	$: client = $clients.find((c) => c.name === clientName) || { color: 'var(--b3)', projects: [] };
+	$: project = client.projects.find((p) => p.name === projectName) || { color: 'var(--b3)' };
 
 	$: total = today.map((e) => e.duration).reduce((a, b) => a + b, 0);
 
@@ -33,10 +38,14 @@
 		on:focus={() => (active = true)}
 		on:blur={() => (active = false)}
 	/>
-	<select name="" id="">
-		<option value="a">EEC 100A</option>
-		<option value="a">EEC 018</option>
-		<option value="a">Cmongus</option>
+	<select bind:value={clientProject} style="color: {project.color};">
+		{#each $clients as client}
+			<optgroup label={client.name}>
+				{#each client.projects as project}
+					<option value={client.name + ',' + project.name}>{project.name}</option>
+				{/each}
+			</optgroup>
+		{/each}
 	</select>
 	<button><Timer size="16px" /></button>
 </form>
@@ -112,7 +121,7 @@
 			padding: 0.35rem 0.5rem;
 			outline: none;
 			width: 100%;
-			max-width: 50px;
+			max-width: 75px;
 			white-space: nowrap;
 			text-overflow: ellipsis;
 			overflow: hidden;
@@ -120,7 +129,6 @@
 
 		select:first-of-type {
 			color: #0af;
-			max-width: 75px;
 		}
 
 		button {
