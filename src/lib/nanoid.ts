@@ -1,3 +1,5 @@
+// https://github.com/ai/nanoid (MIT License)
+
 export const urlAlphabet = 'useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict';
 const scopedUrlAlphabet = urlAlphabet;
 
