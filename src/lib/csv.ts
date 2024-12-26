@@ -1,3 +1,4 @@
+import { nanoid } from '$lib/nanoid';
 import type { Entry, Client } from '$lib/schema';
 
 export interface ParseResult {
@@ -23,6 +24,7 @@ export function parseCSV(csv: string): ParseResult {
 		}
 
 		const entry: Entry = {
+			__uuid__: nanoid(),
 			__column__: 0,
 			task: row[header.indexOf('Description')],
 			project: row[header.indexOf('Project')],
@@ -43,15 +45,16 @@ export function parseCSV(csv: string): ParseResult {
 		.map((client) => {
 			return {
 				name: client || 'No Client',
-				color: '#000000',
+				color: '#678e98',
 				projects: entries
 					.filter((entry) => entry.client === client)
 					.map((entry) => entry.project)
 					.filter((project, index, self) => self.indexOf(project) === index)
 					.map((project) => {
 						return {
+							__archived__: false,
 							name: project,
-							color: '#000000'
+							color: '#678e98'
 						};
 					})
 			};

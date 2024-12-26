@@ -14,12 +14,13 @@
 	$: pos = `top: ${y}%; left: ${x}%;`;
 	let trans = { start: 0.95, duration: 200 };
 
-	function discard() {
-		dispatch('discard');
-	}
-	function save(e: Event) {
+	function del(e: Event) {
 		e.preventDefault();
-		dispatch('save', entry);
+		dispatch('delete');
+	}
+	function upd(e: Event) {
+		e.preventDefault();
+		dispatch('update');
 	}
 	function prevent(e: Event) {
 		e.stopPropagation();
@@ -28,7 +29,7 @@
 
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<form class="editor" style={pos} on:click={prevent} transition:scale={trans} on:submit={save}>
+<form class="editor" style={pos} on:click={prevent} transition:scale={trans} on:submit={upd}>
 	<h6><span>Entry Editor</span></h6>
 	<label for="">Task</label>
 	<input type="text" bind:value={entry.task} />
@@ -39,7 +40,7 @@
 		{/each}
 	</select>
 	<label for="">Project</label>
-	<select name="" id="">
+	<select id="" bind:value={entry.project}>
 		{#each $clients as client}
 			{#each client.projects as project}
 				<option value={project.name}>{project.name}</option>
@@ -48,8 +49,8 @@
 	</select>
 	<br />
 	<div class="save">
-		<button on:click={discard}><Trash size="12px" />Bye</button>
-		<button on:click={save} type="submit"><Check size="12px" />Save</button>
+		<button on:click={del} type="button"><Trash size="12px" />Bye</button>
+		<button type="submit"><Check size="12px" />Save</button>
 	</div>
 </form>
 
@@ -69,7 +70,7 @@
 		padding-bottom: 1rem;
 
 		position: absolute;
-		z-index: 3;
+		z-index: 5;
 
 		h6 {
 			background: radial-gradient(circle, var(--a1) 1px, transparent 1px);

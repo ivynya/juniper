@@ -28,18 +28,23 @@
 		const screenWidth = window.innerWidth;
 		const editorWidth = 300;
 		const right = e.clientX + editorWidth;
-		if (right - rect.left + 20 > screenWidth) {
+		if (right > screenWidth) {
 			editX -= ((right - screenWidth + 20) / rect.width) * 100;
 		}
 	}
 	function closeEditor() {
+		if (!edit) return;
 		edit = false;
 		entry = entryCopy;
 	}
 
-	function save() {
+	function del() {
+		closeEditor();
+		dispatch('delete', entry.__uuid__);
+	}
+	function upd() {
 		edit = false;
-		dispatch('save', entry);
+		dispatch('update', { uuid: entry.__uuid__, entry: entry });
 	}
 </script>
 
@@ -66,7 +71,7 @@
 		</span>
 	</div>
 	{#if edit}
-		<Editor bind:entry y={editY} x={editX} on:save={save} on:discard={closeEditor} />
+		<Editor bind:entry y={editY} x={editX} on:update={upd} on:delete={del} />
 	{/if}
 </button>
 

@@ -3,6 +3,7 @@ import type { Entry, Client } from './schema';
 
 export const entries = writable<Entry[]>([
 	{
+		__uuid__: '0',
 		__column__: 0,
 		task: 'Loading data...',
 		project: 'App',
@@ -21,6 +22,7 @@ export const clients = writable<Client[]>([
 		color: '#000000',
 		projects: [
 			{
+				__archived__: false,
 				name: 'App',
 				color: '#000000'
 			}

@@ -8,11 +8,11 @@
 		if (load.entries) $entries = load.entries;
 		if (load.clients) $clients = load.clients;
 		entries.subscribe((value) => {
-			console.log(value);
+			console.log('saved ' + value.length + ' entries');
 			saveData(value);
 		});
 		clients.subscribe((value) => {
-			console.log(value);
+			console.log('saved ' + value.length + ' clients');
 			saveMeta(value);
 		});
 	});

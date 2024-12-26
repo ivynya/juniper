@@ -1,7 +1,7 @@
 <script lang="ts">
 	import CalendarEntry from './CalendarEntry.svelte';
 	import { entries, clients, formatHour, computeColumn } from '$lib/app';
-	import { createEventDispatcher } from 'svelte';
+	import { nanoid } from '$lib/nanoid';
 	import type { Entry } from '$lib/schema';
 
 	export let isDragging: boolean;
@@ -25,6 +25,7 @@
 			};
 		}),
 		{
+			__uuid__: '',
 			__column__: computeColumn(today, timeA / resolution, timeB / resolution),
 			task: 'New entry',
 			project: $clients[0].projects[0].name,
@@ -39,13 +40,11 @@
 	];
 	$: cols = Math.max(...renderedEntries.map((e) => e.__column__)) + 1;
 
-	function deleteEntry(i: number) {
-		const globalIndex = $entries.indexOf(today[i]);
-		$entries = $entries.filter((_, j) => j !== globalIndex).filter((e) => e.duration > 0);
+	function deleteEntry(uuid: string) {
+		$entries = $entries.filter((e) => e.__uuid__ !== uuid);
 	}
-	function updateEntry(i: number, n: Entry) {
-		const globalIndex = $entries.indexOf(today[i]);
-		$entries = $entries.map((e, j) => (j === globalIndex ? n : e));
+	function updateEntry(uuid: string, n: Entry) {
+		$entries = $entries.map((e) => (e.__uuid__ === uuid ? n : e));
 	}
 
 	function mouseDown(h: number) {
@@ -68,6 +67,7 @@
 		}
 
 		$entries.push({
+			__uuid__: nanoid(),
 			__column__: computeColumn(today, timeA / resolution, timeB / resolution),
 			task: 'New entry',
 			project: $clients[0].projects[0].name,
@@ -123,8 +123,8 @@
 				entry={e}
 				height={height * e.duration * resolution}
 				editing={isDragging}
-				on:delete={() => deleteEntry(renderedEntries.indexOf(e))}
-				on:update={(v) => updateEntry(renderedEntries.indexOf(e), v.detail)}
+				on:delete={(e) => deleteEntry(e.detail)}
+				on:update={(e) => updateEntry(e.detail.uuid, e.detail.entry)}
 			/>
 		{/each}
 	</div>

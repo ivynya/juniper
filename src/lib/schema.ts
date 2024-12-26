@@ -1,4 +1,5 @@
 export interface Entry {
+	__uuid__: string;
 	__column__: number;
 	task: string;
 	project: string;
@@ -12,6 +13,7 @@ export interface Entry {
 }
 
 export interface Project {
+	__archived__: boolean;
 	name: string;
 	color: string;
 }
