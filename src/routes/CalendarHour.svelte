@@ -1,6 +1,6 @@
 <script lang="ts">
 	import CalendarEntry from './CalendarEntry.svelte';
-	import { entries, clients, formatHour, computeColumn } from '$lib/app';
+	import { entries, clients, formatHour, computeColumn, computeColumns } from '$lib/app';
 	import { nanoid } from '$lib/nanoid';
 	import type { Entry } from '$lib/schema';
 
@@ -12,18 +12,15 @@
 	export let resolution: number;
 	export let todayDate: string;
 
-	$: today = $entries.filter((e) => new Date(e.z_start).toDateString() === todayDate);
+	$: today = $entries
+		.filter((e) => new Date(e.z_start).toDateString() === todayDate)
+		.sort((a, b) => a.start - b.start);
 	$: height = 30 - resolution * 5;
 	$: naptime = i / resolution < 6 || i / resolution == 23;
 	$: highlighted = isDragging && i >= timeA && i <= timeB;
 
 	$: renderedEntries = [
-		...today.map((e, i) => {
-			return {
-				...e,
-				__column__: computeColumn(today.slice(0, i), e.start, e.end)
-			};
-		}),
+		...computeColumns(today),
 		{
 			__uuid__: '',
 			__column__: computeColumn(today, timeA / resolution, timeB / resolution),
@@ -68,7 +65,7 @@
 
 		$entries.push({
 			__uuid__: nanoid(),
-			__column__: computeColumn(today, timeA / resolution, timeB / resolution),
+			__column__: 0,
 			task: 'New entry',
 			project: $clients[0].projects[0].name,
 			client: $clients[0].name,

@@ -36,11 +36,22 @@ export function computeColumn(entries: Entry[], start: number, end: number): num
 			return (
 				(e.start < end && e.start >= start) ||
 				(e.end <= end && e.end > start) ||
-				(e.start <= start && e.end >= end)
+				(e.start <= start && e.end >= end) ||
+				(e.end < start && e.start > start)
 			);
 		})
 		.map((e) => e.__column__);
-	return [0, 1, 2, 3, 4, 5, 6, 7, 8].filter((i) => !conflicting.includes(i)).at(0) || 0;
+	const col = [0, 1, 2, 3, 4, 5, 6, 7, 8].filter((i) => !conflicting.includes(i)).at(0);
+	if (col === undefined) return 0;
+	return col;
+}
+
+export function computeColumns(entries: Entry[]): Entry[] {
+	for (let i = 0; i < entries.length; i++) {
+		const entry = entries[i];
+		entry.__column__ = computeColumn(entries.slice(0, i), entry.start, entry.end);
+	}
+	return entries;
 }
 
 export function formatHour(hour: number): string {
