@@ -1,14 +1,24 @@
 <script lang="ts">
 	import { clients } from '$lib/app';
 	import { createEventDispatcher } from 'svelte';
+	import { scale } from 'svelte/transition';
 	import { Check, Trash } from 'lucide-svelte';
 	import type { Entry } from '$lib/schema';
 
 	const dispatch = createEventDispatcher();
 
 	export let entry: Entry;
+	export let x: number;
+	export let y: number;
 
-	function save() {
+	$: pos = `top: ${y}%; left: ${x}%;`;
+	let trans = { start: 0.95, duration: 200 };
+
+	function discard() {
+		dispatch('discard');
+	}
+	function save(e: Event) {
+		e.preventDefault();
 		dispatch('save', entry);
 	}
 	function prevent(e: Event) {
@@ -16,9 +26,9 @@
 	}
 </script>
 
+<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<!-- svelte-ignore a11y-no-static-element-interactions -->
-<div class="editor" on:click={prevent}>
+<form class="editor" style={pos} on:click={prevent} transition:scale={trans} on:submit={save}>
 	<h6><span>Entry Editor</span></h6>
 	<label for="">Task</label>
 	<input type="text" bind:value={entry.task} />
@@ -36,13 +46,12 @@
 			{/each}
 		{/each}
 	</select>
-
 	<br />
 	<div class="save">
-		<button><Trash size="12px" />Bye</button>
-		<button><Check size="12px" />Save</button>
+		<button on:click={discard}><Trash size="12px" />Bye</button>
+		<button on:click={save} type="submit"><Check size="12px" />Save</button>
 	</div>
-</div>
+</form>
 
 <style lang="scss">
 	.editor {
@@ -60,8 +69,6 @@
 		padding-bottom: 1rem;
 
 		position: absolute;
-		right: 5%;
-		top: 50%;
 		z-index: 3;
 
 		h6 {

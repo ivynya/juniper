@@ -11,11 +11,45 @@
 	$: project = client.projects.find((p) => p.name === entry.project) || { color: 'var(--b3)' };
 
 	export let entry: Entry;
+	let entryCopy: Entry = entry;
 
+	let editBtn: HTMLButtonElement;
 	let edit = false;
+	let editY = 0;
+	let editX = 0;
+	function openEditor(e: MouseEvent) {
+		e.preventDefault();
+		entryCopy = { ...entry };
+		edit = !edit;
+		const rect = editBtn.getBoundingClientRect();
+		editY = ((e.clientY - rect.top) / rect.height) * 100;
+		editX = ((e.clientX - rect.left) / rect.width) * 100;
+
+		const screenWidth = window.innerWidth;
+		const editorWidth = 300;
+		const right = e.clientX + editorWidth;
+		if (right - rect.left + 20 > screenWidth) {
+			editX -= ((right - screenWidth + 20) / rect.width) * 100;
+		}
+	}
+	function closeEditor() {
+		edit = false;
+		entry = entryCopy;
+	}
+
+	function save() {
+		edit = false;
+		dispatch('save', entry);
+	}
 </script>
 
-<button class="entry" class:edit on:click={() => (edit = !edit)}>
+<button
+	bind:this={editBtn}
+	class="entry"
+	class:edit
+	on:click={closeEditor}
+	on:contextmenu={openEditor}
+>
 	<div class="data">
 		<span>{entry.task}</span>
 		<span>
@@ -32,7 +66,7 @@
 		</span>
 	</div>
 	{#if edit}
-		<Editor bind:entry />
+		<Editor bind:entry y={editY} x={editX} on:save={save} on:discard={closeEditor} />
 	{/if}
 </button>
 
@@ -52,6 +86,8 @@
 		width: 100%;
 		text-align: left;
 		position: relative;
+		-webkit-user-select: none;
+		user-select: none;
 
 		&.edit {
 			background: var(--b2);
