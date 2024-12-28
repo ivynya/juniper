@@ -1,9 +1,10 @@
 import { nanoid } from '$lib/nanoid';
-import type { Entry, Client } from '$lib/schema';
+import type { Entry, Client, InputData } from '$lib/schema';
 
 export interface ParseResult {
 	entries: Entry[];
 	clients: Client[];
+	input: InputData;
 }
 
 export function parseCSV(csv: string): ParseResult {
@@ -62,6 +63,11 @@ export function parseCSV(csv: string): ParseResult {
 
 	return {
 		entries,
-		clients
+		clients,
+		input: {
+			task: '',
+			clientProject: ',',
+			start: undefined
+		}
 	};
 }

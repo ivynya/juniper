@@ -2,7 +2,6 @@
 	import { Clock, ChevronLeft, ChevronRight, MoonStar, Timer, CirclePause } from 'lucide-svelte';
 	import { entries, clients, inputData, formatHour } from '$lib/app';
 	import type { Entry } from '$lib/schema';
-	import { onMount } from 'svelte';
 	import { nanoid } from '$lib/nanoid';
 
 	export let resolution: number = 2;
@@ -40,16 +39,14 @@
 	}
 
 	$: timerActive = $inputData.start != undefined;
+	$: timerActive ? runTimer() : clearInterval(timerInterval);
 	let duration = 0;
 	let timerInterval: number;
 	function startStopTimer() {
-		if ($inputData.start == undefined) {
+		if ($inputData.start === undefined) {
 			$inputData.start = new Date().toISOString();
 			duration = 0;
-			runTimer();
-		} else {
-			stopTimer();
-		}
+		} else stopTimer();
 	}
 	function stopTimer() {
 		if ($inputData.start == undefined) return;
@@ -78,18 +75,13 @@
 	}
 	function runTimer() {
 		timerInterval = setInterval(() => {
-			if ($inputData.start === undefined) {
-				clearInterval(timerInterval);
-				return;
-			}
+			if ($inputData.start === undefined) return;
 			const start = new Date($inputData.start);
 			const now = new Date();
 			duration = Math.floor((now.getTime() - start.getTime()) / 1000);
+			console.log('timer running');
 		}, 1000);
 	}
-	onMount(() => {
-		if ($inputData.start != undefined) runTimer();
-	});
 </script>
 
 <form class="entry" class:active class:timerActive style="--color: {project.color};">

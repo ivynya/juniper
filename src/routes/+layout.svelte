@@ -1,12 +1,13 @@
 <script lang="ts">
-	import { entries, clients } from '$lib/app';
-	import { loadData, saveData, saveMeta } from '$lib/data';
+	import { entries, clients, inputData } from '$lib/app';
+	import { loadData, saveData, saveInput, saveMeta } from '$lib/data';
 	import { onMount } from 'svelte';
 
 	onMount(() => {
 		const load = loadData();
 		if (load.entries) $entries = load.entries;
 		if (load.clients) $clients = load.clients;
+		if (load.input) $inputData = load.input;
 		entries.subscribe((value) => {
 			console.log('saved ' + value.length + ' entries');
 			saveData(value);
@@ -14,6 +15,10 @@
 		clients.subscribe((value) => {
 			console.log('saved ' + value.length + ' clients');
 			saveMeta(value);
+		});
+		inputData.subscribe((value) => {
+			console.log('saved input');
+			saveInput(value);
 		});
 	});
 </script>
