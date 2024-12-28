@@ -1,7 +1,9 @@
 <script lang="ts">
-	import { Clock, ChevronLeft, ChevronRight, MoonStar, Timer } from 'lucide-svelte';
-	import { entries, clients, formatHour } from '$lib/app';
+	import { Clock, ChevronLeft, ChevronRight, MoonStar, Timer, CirclePause } from 'lucide-svelte';
+	import { entries, clients, inputData, formatHour } from '$lib/app';
 	import type { Entry } from '$lib/schema';
+	import { onMount } from 'svelte';
+	import { nanoid } from '$lib/nanoid';
 
 	export let resolution: number = 2;
 	export let wakingHoursOnly: boolean = false;
@@ -12,10 +14,17 @@
 	let todayOffset: number = 0;
 	let active = false;
 
-	let clientProject: string = '';
-	$: [clientName, projectName] = clientProject.split(',');
-	$: client = $clients.find((c) => c.name === clientName) || { color: 'var(--b3)', projects: [] };
-	$: project = client.projects.find((p) => p.name === projectName) || { color: 'var(--b3)' };
+	$: [clientName, projectName] = $inputData.clientProject.split(',');
+	$: client = $clients.find((c) => c.name === clientName) || {
+		color: 'var(--b3)',
+		name: '',
+		projects: []
+	};
+	$: project = client.projects.find((p) => p.name === projectName) || {
+		color: 'var(--b3)',
+		name: ''
+	};
+	$: suggestions = new Set($entries.filter((e) => e.project === project.name).map((e) => e.task));
 
 	$: total = today.map((e) => e.duration).reduce((a, b) => a + b, 0);
 
@@ -29,16 +38,75 @@
 		today.setDate(today.getDate() + todayOffset);
 		todayDate = today.toDateString();
 	}
+
+	$: timerActive = $inputData.start != undefined;
+	let duration = 0;
+	let timerInterval: number;
+	function startStopTimer() {
+		if ($inputData.start == undefined) {
+			$inputData.start = new Date().toISOString();
+			duration = 0;
+			runTimer();
+		} else {
+			stopTimer();
+		}
+	}
+	function stopTimer() {
+		if ($inputData.start == undefined) return;
+
+		const start = new Date($inputData.start);
+		const end = new Date();
+		const timeA = start.getHours() + start.getMinutes() / 60 + start.getSeconds() / 3600;
+		const timeB = end.getHours() + end.getMinutes() / 60 + end.getSeconds() / 3600;
+
+		$entries.push({
+			__uuid__: nanoid(),
+			__column__: 0,
+			task: $inputData.task,
+			project: projectName,
+			client: clientName,
+			z_start: $inputData.start,
+			z_end: new Date().toISOString(),
+			start: timeA,
+			end: timeB,
+			duration: Math.abs(timeB - timeA),
+			tags: []
+		});
+		$entries = $entries;
+		clearInterval(timerInterval);
+		$inputData.start = undefined;
+	}
+	function runTimer() {
+		timerInterval = setInterval(() => {
+			if ($inputData.start === undefined) {
+				clearInterval(timerInterval);
+				return;
+			}
+			const start = new Date($inputData.start);
+			const now = new Date();
+			duration = Math.floor((now.getTime() - start.getTime()) / 1000);
+		}, 1000);
+	}
+	onMount(() => {
+		if ($inputData.start != undefined) runTimer();
+	});
 </script>
 
-<form class="entry" class:active>
+<form class="entry" class:active class:timerActive style="--color: {project.color};">
 	<input
 		type="text"
 		placeholder="What are you working on?"
 		on:focus={() => (active = true)}
 		on:blur={() => (active = false)}
+		bind:value={$inputData.task}
+		list="task-suggestions"
 	/>
-	<select bind:value={clientProject} style="color: {project.color};">
+	<datalist id="task-suggestions">
+		{#each suggestions as suggestion}
+			<option value={suggestion} />
+		{/each}
+	</datalist>
+	<select bind:value={$inputData.clientProject} style="color: {project.color};">
 		{#each $clients as client}
 			<optgroup label={client.name}>
 				{#each client.projects as project}
@@ -47,8 +115,20 @@
 			</optgroup>
 		{/each}
 	</select>
-	<button><Timer size="16px" /></button>
+	<button on:click={startStopTimer}>
+		{#if timerActive}
+			<CirclePause size="16px" />
+		{:else}
+			<Timer size="16px" />
+		{/if}
+	</button>
 </form>
+{#if timerActive}
+	<section class="timer">
+		<button>started</button>
+		<span>{formatHour(duration / 3600)}</span>
+	</section>
+{/if}
 <section class="opts">
 	<span>
 		<Clock size="18px" />
@@ -82,6 +162,18 @@
 
 		&.active input {
 			border: 1px dotted var(--b3);
+		}
+
+		&.timerActive input {
+			border-color: var(--color);
+		}
+		&.timerActive select {
+			border-color: var(--color);
+		}
+		&.timerActive button {
+			background: #fa0;
+			border-color: transparent;
+			color: var(--b1);
 		}
 
 		input {

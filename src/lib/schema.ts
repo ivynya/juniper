@@ -23,3 +23,9 @@ export interface Client {
 	color: string;
 	projects: Project[];
 }
+
+export interface InputData {
+	task: string;
+	clientProject: string;
+	start: string | undefined;
+}

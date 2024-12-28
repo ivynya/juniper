@@ -108,14 +108,14 @@
 >
 	<span class="row">
 		{#if i % resolution === 0}
-			<span class="label">{formatHour(i / resolution)}</span>
+			<span class="label">{formatHour(i / resolution, false)}</span>
 			<hr />
 		{:else}
 			<span class="label" style="opacity: 0.25;">·····</span>
 		{/if}
 	</span>
 	<div class="entries" style="grid-template-columns: repeat({cols}, 1fr);">
-		{#each renderedEntries.filter((e) => e.start * resolution === i) as e}
+		{#each renderedEntries.filter((e) => Math.round(e.start * resolution) === i) as e}
 			<CalendarEntry
 				entry={e}
 				height={height * e.duration * resolution}

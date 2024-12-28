@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import type { Entry, Client } from './schema';
+import type { Entry, Client, InputData } from '$lib/schema';
 
 export const entries = writable<Entry[]>([
 	{
@@ -30,6 +30,12 @@ export const clients = writable<Client[]>([
 	}
 ]);
 
+export const inputData = writable<InputData>({
+	task: '',
+	clientProject: ',',
+	start: undefined
+});
+
 export function computeColumn(entries: Entry[], start: number, end: number): number {
 	const conflicting = entries
 		.filter((e) => {
@@ -54,10 +60,14 @@ export function computeColumns(entries: Entry[]): Entry[] {
 	return entries;
 }
 
-export function formatHour(hour: number): string {
-	const hrs = hour - (hour % 1);
-	const min = Math.round((hour % 1) * 60)
+export function formatHour(hour: number, includeSeconds: boolean = true): string {
+	const hrs = Math.floor(hour);
+	const min = Math.floor((hour % 1) * 60)
 		.toString()
 		.padStart(2, '0');
-	return hrs < 10 ? `0${hrs}:${min}` : `${hrs}:${min}`;
+	const sec = Math.round((((hour % 1) * 60) % 1) * 60)
+		.toString()
+		.padStart(2, '0');
+	if (includeSeconds) return `${hrs < 10 ? `0${hrs}` : hrs}:${min}:${sec}`;
+	else return `${hrs < 10 ? `0${hrs}` : hrs}:${min}`;
 }

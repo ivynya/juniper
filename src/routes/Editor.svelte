@@ -2,7 +2,7 @@
 	import { clients } from '$lib/app';
 	import { createEventDispatcher } from 'svelte';
 	import { scale } from 'svelte/transition';
-	import { Check, Trash } from 'lucide-svelte';
+	import { Check, Circle, Kanban, Layers, Trash } from 'lucide-svelte';
 	import type { Entry } from '$lib/schema';
 
 	const dispatch = createEventDispatcher();
@@ -11,8 +11,18 @@
 	export let x: number;
 	export let y: number;
 
-	$: pos = `top: ${y}%; left: ${x}%;`;
+	$: pos = `top: ${y + 1}%; left: ${x}%;`;
 	let trans = { start: 0.95, duration: 200 };
+
+	$: client = $clients.find((c) => c.name === entry.client) || {
+		color: 'var(--b3)',
+		name: '',
+		projects: []
+	};
+	$: project = client.projects.find((p) => p.name === entry.project) || {
+		color: 'var(--b3)',
+		name: ''
+	};
 
 	function del(e: Event) {
 		e.preventDefault();
@@ -20,6 +30,7 @@
 	}
 	function upd(e: Event) {
 		e.preventDefault();
+		entry.duration = Math.abs(entry.end - entry.start);
 		dispatch('update');
 	}
 	function prevent(e: Event) {
@@ -31,22 +42,25 @@
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <form class="editor" style={pos} on:click={prevent} transition:scale={trans} on:submit={upd}>
 	<h6><span>Entry Editor</span></h6>
-	<label for="">Task</label>
-	<input type="text" bind:value={entry.task} />
-	<label for="">Client</label>
-	<select id="" bind:value={entry.client}>
-		{#each $clients as client}
-			<option value={client.name}>{client.name}</option>
-		{/each}
-	</select>
-	<label for="">Project</label>
-	<select id="" bind:value={entry.project}>
-		{#each $clients as client}
+	<div class="clientProject">
+		<label for="editor-task">Task</label>
+		<Circle size="10px" />
+		<input id="editor-task" type="text" bind:value={entry.task} />
+		<label for="editor-client">Client</label>
+		<Kanban size="10px" color={client.color} />
+		<select id="editor-client" bind:value={entry.client} style="color: {client.color}">
+			{#each $clients as client}
+				<option value={client.name}>{client.name}</option>
+			{/each}
+		</select>
+		<label for="editor-project">Project</label>
+		<Layers size="10px" color={project.color} />
+		<select id="editor-project" bind:value={entry.project} style="color: {project.color}">
 			{#each client.projects as project}
 				<option value={project.name}>{project.name}</option>
 			{/each}
-		{/each}
-	</select>
+		</select>
+	</div>
 	<br />
 	<div class="save">
 		<button on:click={del} type="button"><Trash size="12px" />Bye</button>
@@ -94,8 +108,6 @@
 			font-size: 0.7rem;
 			font-weight: bold;
 			text-transform: uppercase;
-			margin-top: 0.5rem;
-			margin-bottom: 0.1rem;
 		}
 
 		input,
@@ -110,8 +122,16 @@
 			font-family: inherit;
 			font-size: 0.7rem;
 			outline: none;
-			padding: 0.125rem 0;
+			padding: 0;
 			width: 100%;
+		}
+
+		.clientProject {
+			display: grid;
+			grid-template-columns: 70px 15px 1fr;
+			align-items: center;
+			row-gap: 0.75rem;
+			margin: 0.75rem 0;
 		}
 
 		.save {
