@@ -1,5 +1,13 @@
 <script lang="ts">
-	import { Clock, ChevronLeft, ChevronRight, MoonStar, Timer, CirclePause } from 'lucide-svelte';
+	import {
+		Clock,
+		ChevronLeft,
+		ChevronRight,
+		MoonStar,
+		Timer,
+		CirclePause,
+		Tag
+	} from 'lucide-svelte';
 	import { entries, clients, inputData, formatHour } from '$lib/app';
 	import type { Entry } from '$lib/schema';
 	import { nanoid } from '$lib/nanoid';
@@ -84,70 +92,85 @@
 	}
 </script>
 
-<form class="entry" class:active class:timerActive style="--color: {project.color};">
-	<input
-		type="text"
-		placeholder="What are you working on?"
-		on:focus={() => (active = true)}
-		on:blur={() => (active = false)}
-		bind:value={$inputData.task}
-		list="task-suggestions"
-	/>
-	<datalist id="task-suggestions">
-		{#each suggestions as suggestion}
-			<option value={suggestion} />
-		{/each}
-	</datalist>
-	<select bind:value={$inputData.clientProject} style="color: {project.color};">
-		{#each $clients as client}
-			<optgroup label={client.name}>
-				{#each client.projects as project}
-					<option value={client.name + ',' + project.name}>{project.name}</option>
-				{/each}
-			</optgroup>
-		{/each}
-	</select>
-	<button on:click={startStopTimer}>
-		{#if timerActive}
-			<CirclePause size="16px" />
-		{:else}
-			<Timer size="16px" />
-		{/if}
-	</button>
-</form>
-{#if timerActive}
-	<section class="timer">
-		<button>started</button>
-		<span>{formatHour(duration / 3600)}</span>
-	</section>
-{/if}
-<section class="opts">
-	<span>
-		<Clock size="18px" />
-		{formatHour(total)} today
-	</span>
-	<span class="spacer" />
-	{#if showCalControls}
-		<button class="resolution" on:click={cycleResolution}>
-			{resolution}x
+<div class="input">
+	<form class="entry" class:active class:timerActive style="--color: {project.color};">
+		<input
+			type="text"
+			placeholder="What are you working on?"
+			on:focus={() => (active = true)}
+			on:blur={() => (active = false)}
+			bind:value={$inputData.task}
+			list="task-suggestions"
+		/>
+		<datalist id="task-suggestions">
+			{#each suggestions as suggestion}
+				<option value={suggestion} />
+			{/each}
+		</datalist>
+		<select class="project" bind:value={$inputData.clientProject} style="color: {project.color};">
+			{#each $clients as client}
+				<optgroup label={client.name}>
+					{#each client.projects as project}
+						<option value={client.name + ',' + project.name}>{project.name}</option>
+					{/each}
+				</optgroup>
+			{/each}
+		</select>
+		<button>
+			<Tag size="16px" />
 		</button>
-		<label for="waking-hours">
-			<MoonStar size="18px" color={wakingHoursOnly ? 'var(--b4)' : 'var(--b2)'} />
-			<input type="checkbox" id="waking-hours" hidden bind:checked={wakingHoursOnly} />
-		</label>
-		<span>{todayDate}</span>
-		<button on:click={() => recalculateToday(-1)}>
-			<ChevronLeft size="18px" />
+		<button on:click={startStopTimer}>
+			{#if timerActive}
+				<CirclePause size="16px" />
+			{:else}
+				<Timer size="16px" />
+			{/if}
 		</button>
-		<button on:click={() => recalculateToday(1)}>
-			<ChevronRight size="18px" />
-		</button>
-	{:else}
-		<span>{todayDate}</span>
+	</form>
+	{#if timerActive}
+		<section class="timer">
+			<button>started</button>
+			<span>{formatHour(duration / 3600)}</span>
+		</section>
 	{/if}
-</section>
+	<section class="opts">
+		<span>
+			<Clock size="18px" />
+			{formatHour(total)} today
+		</span>
+		<span class="spacer" />
+		{#if showCalControls}
+			<button class="resolution" on:click={cycleResolution}>
+				{resolution}x
+			</button>
+			<label for="waking-hours">
+				<MoonStar size="18px" color={wakingHoursOnly ? 'var(--b4)' : 'var(--b2)'} />
+				<input type="checkbox" id="waking-hours" hidden bind:checked={wakingHoursOnly} />
+			</label>
+			<span>{todayDate}</span>
+			<button on:click={() => recalculateToday(-1)}>
+				<ChevronLeft size="18px" />
+			</button>
+			<button on:click={() => recalculateToday(1)}>
+				<ChevronRight size="18px" />
+			</button>
+		{:else}
+			<span>{todayDate}</span>
+		{/if}
+	</section>
+</div>
 
 <style lang="scss">
+	.input {
+		background-color: var(--b0);
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		position: sticky;
+		top: 0;
+		z-index: 5;
+	}
+
 	.entry {
 		display: flex;
 		align-items: center;
@@ -189,7 +212,7 @@
 			}
 		}
 
-		select {
+		.project {
 			appearance: none;
 			background: none;
 			border: 1px dotted var(--b2);
@@ -201,7 +224,7 @@
 			cursor: pointer;
 			font-family: inherit;
 			font-size: 0.7rem;
-			margin-right: 10px;
+			margin-right: 2px;
 			padding: 0.35rem 0.5rem;
 			outline: none;
 			width: 100%;
@@ -209,10 +232,6 @@
 			white-space: nowrap;
 			text-overflow: ellipsis;
 			overflow: hidden;
-		}
-
-		select:first-of-type {
-			color: #0af;
 		}
 
 		button {
@@ -223,7 +242,7 @@
 			cursor: pointer;
 			display: grid;
 			place-items: center;
-			width: 2.75rem;
+			margin-left: 8px;
 			padding: 0.35rem;
 
 			&:hover {
@@ -234,7 +253,6 @@
 	}
 
 	.opts {
-		background-color: var(--b0);
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
@@ -243,9 +261,6 @@
 		margin-top: 0.55rem;
 		margin-bottom: 0.25rem;
 		padding-bottom: 0.5rem;
-		position: sticky;
-		top: 0;
-		z-index: 5;
 
 		.spacer {
 			flex: 1;

@@ -1,8 +1,10 @@
 <script lang="ts">
+	import EditorDate from './EditorDate.svelte';
+	import EditorTime from './EditorTime.svelte';
 	import { clients } from '$lib/app';
 	import { createEventDispatcher } from 'svelte';
 	import { scale } from 'svelte/transition';
-	import { Check, Circle, Kanban, Layers, Trash } from 'lucide-svelte';
+	import { ArrowRight, Check, Circle, Kanban, Layers, Tag, Trash } from 'lucide-svelte';
 	import type { Entry } from '$lib/schema';
 
 	const dispatch = createEventDispatcher();
@@ -60,6 +62,17 @@
 				<option value={project.name}>{project.name}</option>
 			{/each}
 		</select>
+	</div>
+	<div class="startEnd">
+		<EditorDate />
+		<EditorTime />
+		<ArrowRight size="20px" color="var(--a1)" />
+		<EditorTime />
+	</div>
+	<div class="tags">
+		<label for="editor-tags">Tags</label>
+		<Tag size="10px" color="var(--a1)" />
+		<input id="editor-tags" type="text" bind:value={entry.tags} />
 	</div>
 	<br />
 	<div class="save">
@@ -126,12 +139,21 @@
 			width: 100%;
 		}
 
-		.clientProject {
+		.clientProject,
+		.tags {
 			display: grid;
 			grid-template-columns: 70px 15px 1fr;
 			align-items: center;
 			row-gap: 0.75rem;
 			margin: 0.75rem 0;
+		}
+
+		.startEnd {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			column-gap: 0.75rem;
+			margin: 0.25rem 0;
 		}
 
 		.save {
