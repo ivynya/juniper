@@ -52,6 +52,7 @@ export function computeColumn(entries: Entry[], start: number, end: number): num
 	return col;
 }
 
+// compute display columns for calendar view for each entry
 export function computeColumns(entries: Entry[]): Entry[] {
 	for (let i = 0; i < entries.length; i++) {
 		const entry = entries[i];
@@ -60,14 +61,25 @@ export function computeColumns(entries: Entry[]): Entry[] {
 	return entries;
 }
 
+// format fractional hours as HH:MM:SS or HH:MM
 export function formatHour(hour: number, includeSeconds: boolean = true): string {
 	const hrs = Math.floor(hour);
-	const min = Math.floor((hour % 1) * 60)
+	const min = Math.round((hour % 1) * 60)
 		.toString()
 		.padStart(2, '0');
-	const sec = Math.round((((hour % 1) * 60) % 1) * 60)
+	const sec = Math.floor(((hour * 60) % 1) * 60)
 		.toString()
 		.padStart(2, '0');
 	if (includeSeconds) return `${hrs < 10 ? `0${hrs}` : hrs}:${min}:${sec}`;
 	else return `${hrs < 10 ? `0${hrs}` : hrs}:${min}`;
+}
+
+export function tz(hour: number): number {
+	const offset = new Date().getTimezoneOffset() / 60;
+	return hour + offset;
+}
+
+export function ut(hour: number): number {
+	const offset = new Date().getTimezoneOffset() / 60;
+	return hour - offset;
 }

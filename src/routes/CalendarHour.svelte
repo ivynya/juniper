@@ -1,6 +1,6 @@
 <script lang="ts">
 	import CalendarEntry from './CalendarEntry.svelte';
-	import { entries, clients, formatHour, computeColumn, computeColumns } from '$lib/app';
+	import { entries, clients, formatHour, computeColumn, computeColumns, tz, ut } from '$lib/app';
 	import { nanoid } from '$lib/nanoid';
 	import type { Entry } from '$lib/schema';
 
@@ -23,18 +23,18 @@
 		...computeColumns(today),
 		{
 			__uuid__: '',
-			__column__: computeColumn(today, timeA / resolution, timeB / resolution),
+			__column__: computeColumn(today, ut(timeA / resolution), ut(timeB / resolution)),
 			task: 'New entry',
 			project: $clients[0].projects[0].name,
 			client: $clients[0].name,
 			z_start: '',
 			z_end: '',
-			start: timeA / resolution,
-			end: timeB / resolution,
+			start: ut(timeA / resolution),
+			end: ut(timeB / resolution),
 			duration: Math.abs(timeB - timeA) / resolution,
 			tags: []
 		}
-	];
+	].filter((e) => e.duration > 0);
 	$: cols = Math.max(...renderedEntries.map((e) => e.__column__)) + 1;
 
 	function deleteEntry(uuid: string) {
@@ -85,8 +85,8 @@
 					0
 				)
 			).toISOString(),
-			start: timeA / resolution,
-			end: timeB / resolution,
+			start: ut(timeA / resolution),
+			end: ut(timeB / resolution),
 			duration: Math.abs(timeB - timeA) / resolution,
 			tags: []
 		});
@@ -115,10 +115,11 @@
 		{/if}
 	</span>
 	<div class="entries" style="grid-template-columns: repeat({cols}, 1fr);">
-		{#each renderedEntries.filter((e) => Math.round(e.start * resolution) === i) as e}
+		{#each renderedEntries.filter((e) => Math.floor(tz(e.start) * resolution) === i) as e}
 			<CalendarEntry
 				entry={e}
 				height={height * e.duration * resolution}
+				offset={height * (e.start % (1 / resolution)) * resolution}
 				editing={isDragging}
 				on:delete={(e) => deleteEntry(e.detail)}
 				on:update={(e) => updateEntry(e.detail.uuid, e.detail.entry)}

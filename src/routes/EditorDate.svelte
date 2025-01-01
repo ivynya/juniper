@@ -1,11 +1,29 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+
+	let dateEl: HTMLElement;
+	export let date = 0;
+
+	onMount(() => {
+		dateEl.scrollTo({
+			top: date * 20 - 16,
+			behavior: 'instant'
+		});
+
+		dateEl.addEventListener('scroll', () => {
+			const index = Math.round(dateEl.scrollTop / 20);
+			date = index;
+		});
+	});
 </script>
 
 <div class="picker">
-	<div class="hour">
-		{#each Array(48) as _, i}
-			<span>Dec {i.toString().padStart(2, '0')}</span>
+	<div class="date" bind:this={dateEl}>
+		<span>--</span>
+		{#each Array(31) as _, i}
+			<span class:hl={date === i}>Dec {(i + 1).toString().padStart(2, '0')}</span>
 		{/each}
+		<span>--</span>
 	</div>
 </div>
 
@@ -14,11 +32,12 @@
 		color: var(--b2);
 		display: flex;
 		align-items: center;
+		line-height: 1;
 		font-size: 1rem;
 		position: relative;
 	}
 
-	.hour {
+	.date {
 		display: flex;
 		flex-direction: column;
 		gap: 0.25rem;
@@ -33,8 +52,12 @@
 		scrollbar-width: none; /* Firefox */
 
 		> span {
-			line-height: 1;
+			max-height: 16px;
 			scroll-snap-align: center;
+
+			&.hl {
+				color: var(--b3);
+			}
 		}
 		> span:first-of-type {
 			margin-top: 0.25rem;

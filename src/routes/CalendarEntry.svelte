@@ -9,6 +9,7 @@
 	export let editing: boolean;
 	export let entry: Entry;
 	export let height: number;
+	export let offset: number;
 
 	let entryCopy: Entry = entry;
 
@@ -16,6 +17,7 @@
 	$: project = client.projects.find((p) => p.name === entry.project) || { color: 'var(--b3)' };
 	$: _grid = `grid-column: ${entry.__column__ + 1}; grid-row: 1 / 1`;
 	$: _height = `height: ${height}px`;
+	$: _offset = `margin-top: ${offset}px`;
 	$: _color = `background-color: ${project.color}`;
 
 	let editBtn: HTMLButtonElement;
@@ -65,7 +67,7 @@
 <button
 	bind:this={editBtn}
 	class="entry"
-	style="{_grid}; {_height}; {_color}"
+	style="{_grid}; {_height}; {_color}; {_offset}"
 	class:editing
 	class:edit
 	on:click={closeEditor}

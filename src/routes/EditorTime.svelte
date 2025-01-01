@@ -1,48 +1,77 @@
 <script lang="ts">
+	import { tz, ut } from '$lib/app';
+	import { createEventDispatcher, onMount } from 'svelte';
+
+	const dispatch = createEventDispatcher();
+
+	let hrEl: HTMLElement;
+	let minEl: HTMLElement;
+	let hr: number = 0;
+	let min: number = 0;
+	export let time: number = 0;
+
+	function updTime() {
+		time = hr + min / 60;
+		dispatch('upd', { time });
+	}
+
+	onMount(() => {
+		hr = Math.floor(time);
+		min = (time % 1) * 60;
+
+		hrEl.scrollTo({
+			top: hr * 20,
+			behavior: 'instant'
+		});
+		minEl.scrollTo({
+			top: min * 20,
+			behavior: 'instant'
+		});
+
+		hrEl.addEventListener('scroll', () => {
+			const index = Math.round(hrEl.scrollTop / 20);
+			hr = index;
+			updTime();
+		});
+		minEl.addEventListener('scroll', () => {
+			const index = Math.round(minEl.scrollTop / 20);
+			min = index;
+			updTime();
+		});
+	});
 </script>
 
 <div class="picker">
-	<div class="hour">
-		{#each Array(48) as _, i}
-			<span>{i.toString().padStart(2, '0')}</span>
+	<div class="hour" bind:this={hrEl}>
+		<span>--</span>
+		{#each Array(24) as _, i}
+			<span class:hl={hr === i}>{i.toString().padStart(2, '0')}</span>
 		{/each}
+		<span>--</span>
 	</div>
-	:
-	<div class="minute">
+	<b>:</b>
+	<div class="minute" bind:this={minEl}>
+		<span>--</span>
 		{#each Array(60) as _, i}
-			<span>{i.toString().padStart(2, '0')}</span>
+			<span class:hl={min === i}>{i.toString().padStart(2, '0')}</span>
 		{/each}
+		<span>--</span>
 	</div>
 </div>
 
 <style lang="scss">
 	.picker {
-		color: var(--b3);
+		color: var(--b2);
 		display: flex;
 		align-items: center;
 		gap: 0.25rem;
+		line-height: 1;
 		font-size: 1rem;
 		position: relative;
+	}
 
-		&::before {
-			content: '';
-			position: absolute;
-			top: 0;
-			left: 0;
-			right: 0;
-			height: 15px;
-			pointer-events: none;
-		}
-
-		&::after {
-			content: '';
-			position: absolute;
-			bottom: 0;
-			left: 0;
-			right: 0;
-			height: 15px;
-			pointer-events: none;
-		}
+	b {
+		margin-bottom: 0.125rem;
 	}
 
 	.hour,
@@ -61,8 +90,12 @@
 		scrollbar-width: none; /* Firefox */
 
 		> span {
-			line-height: 1;
+			max-height: 16px;
 			scroll-snap-align: center;
+
+			&.hl {
+				color: var(--b3);
+			}
 		}
 		> span:first-of-type {
 			margin-top: 0.25rem;
