@@ -17,12 +17,8 @@ export function parseCSV(csv: string): ParseResult {
 	const entries = data.map((row) => {
 		const z_start = `${row[header.indexOf('Start date')]}T${row[header.indexOf('Start time')]}Z`;
 		const z_end = `${row[header.indexOf('End date')]}T${row[header.indexOf('End time')]}Z`;
-		const start = new Date(z_start).getHours() + new Date(z_start).getMinutes() / 60;
-		let end = new Date(z_end).getHours() + new Date(z_end).getMinutes() / 60;
-
-		if (new Date(z_end).getHours() < new Date(z_start).getHours()) {
-			end += 24;
-		}
+		const start = new Date(z_start).getTime();
+		const end = new Date(z_end).getTime();
 
 		const entry: Entry = {
 			__uuid__: nanoid(),
@@ -30,11 +26,9 @@ export function parseCSV(csv: string): ParseResult {
 			task: row[header.indexOf('Description')],
 			project: row[header.indexOf('Project')],
 			client: row[header.indexOf('Client')],
-			z_start: z_start,
-			z_end: z_end,
-			start: Math.round(start * 1e6) / 1e6,
-			end: Math.round(end * 1e6) / 1e6,
-			duration: Math.round((end - start) * 1e6) / 1e6,
+			start: start,
+			end: end,
+			duration: end - start,
 			tags: row[header.indexOf('Tags')].split(',').map((tag) => tag.trim())
 		};
 		return entry;

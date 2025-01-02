@@ -6,11 +6,11 @@
 	import type { Entry } from '$lib/schema';
 
 	$: groups = $entries
-		.sort((a, b) => (new Date(a.z_start).getTime() - new Date(b.z_start).getTime()) * -1)
+		.sort((a, b) => b.start - a.start)
 		.slice(0, Math.min($entries.length, 250))
 		.reduce(
 			(acc, entry) => {
-				const date = new Date(entry.z_start);
+				const date = new Date(entry.start);
 				const key = date.toDateString();
 				if (!acc[key]) acc[key] = [];
 				acc[key].push(entry);

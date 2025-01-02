@@ -1,6 +1,6 @@
 <script lang="ts">
 	import CalendarEntry from './CalendarEntry.svelte';
-	import { entries, clients, formatHour, computeColumn, computeColumns, tz, ut } from '$lib/app';
+	import { entries, clients, inputData, computeColumn, computeColumns, ut } from '$lib/app';
 	import { nanoid } from '$lib/nanoid';
 	import type { Entry } from '$lib/schema';
 
@@ -12,26 +12,28 @@
 	export let resolution: number;
 	export let todayDate: string;
 
+	$: todayTime = new Date(todayDate).getTime();
 	$: today = $entries
-		.filter((e) => new Date(e.z_start).toDateString() === todayDate)
+		.filter((e) => new Date(e.start).toDateString() === todayDate)
 		.sort((a, b) => a.start - b.start);
 	$: height = 30 - resolution * 5;
 	$: naptime = i / resolution < 6 || i / resolution == 23;
 	$: highlighted = isDragging && i >= timeA && i <= timeB;
 
+	$: _scaleA = (timeA / resolution) * 60 * 60 * 1000;
+	$: _scaleB = (timeB / resolution) * 60 * 60 * 1000;
+
 	$: renderedEntries = [
 		...computeColumns(today),
 		{
 			__uuid__: '',
-			__column__: computeColumn(today, ut(timeA / resolution), ut(timeB / resolution)),
+			__column__: computeColumn(today, todayTime + _scaleA, todayTime + _scaleB),
 			task: 'New entry',
-			project: $clients[0].projects[0].name,
-			client: $clients[0].name,
-			z_start: '',
-			z_end: '',
-			start: ut(timeA / resolution),
-			end: ut(timeB / resolution),
-			duration: Math.abs(timeB - timeA) / resolution,
+			project: $inputData.clientProject.split(',')[1],
+			client: $inputData.clientProject.split(',')[0],
+			start: todayTime + _scaleA,
+			end: todayTime + _scaleB,
+			duration: Math.abs(_scaleB - _scaleA),
 			tags: []
 		}
 	].filter((e) => e.duration > 0);
@@ -67,33 +69,32 @@
 			__uuid__: nanoid(),
 			__column__: 0,
 			task: 'New entry',
-			project: $clients[0].projects[0].name,
-			client: $clients[0].name,
-			z_start: new Date(
-				new Date(todayDate).setHours(
-					Math.floor(timeA / resolution),
-					((timeA / resolution) % 1) * 60,
-					0,
-					0
-				)
-			).toISOString(),
-			z_end: new Date(
-				new Date(todayDate).setHours(
-					Math.floor(timeB / resolution),
-					((timeB / resolution) % 1) * 60,
-					0,
-					0
-				)
-			).toISOString(),
-			start: ut(timeA / resolution),
-			end: ut(timeB / resolution),
-			duration: Math.abs(timeB - timeA) / resolution,
+			project: $inputData.clientProject.split(',')[1],
+			client: $inputData.clientProject.split(',')[0],
+			start: todayTime + _scaleA,
+			end: todayTime + _scaleB,
+			duration: Math.abs(_scaleB - _scaleA),
 			tags: []
 		});
 		$entries = $entries;
 
 		isDragging = false;
 		timeA = timeB = timeP = -1;
+	}
+
+	function unixToHours(unix: number): number {
+		return (
+			new Date(unix).getUTCHours() +
+			new Date(unix).getUTCMinutes() / 60 +
+			new Date(unix).getUTCSeconds() / 3600
+		);
+	}
+
+	function unixToLeftover(unix: number, resolution: number): number {
+		const baseline = 1 / resolution; // 1, 0.5, 0.25, 0.125
+		const leftover = new Date(unix).getUTCMinutes() / 60 + new Date(unix).getUTCSeconds() / 3600;
+		if (leftover % baseline === 0) return 0;
+		return baseline - (leftover % baseline);
 	}
 </script>
 
@@ -108,18 +109,18 @@
 >
 	<span class="row">
 		{#if i % resolution === 0}
-			<span class="label">{formatHour(i / resolution, false)}</span>
+			<span class="label">{(i / resolution).toString().padStart(2, '0')}:00</span>
 			<hr />
 		{:else}
 			<span class="label" style="opacity: 0.25;">·····</span>
 		{/if}
 	</span>
 	<div class="entries" style="grid-template-columns: repeat({cols}, 1fr);">
-		{#each renderedEntries.filter((e) => Math.floor(tz(e.start) * resolution) === i) as e}
+		{#each renderedEntries.filter((e) => Math.floor(unixToHours(ut(e.start)) * resolution) === i) as e}
 			<CalendarEntry
 				entry={e}
-				height={height * e.duration * resolution}
-				offset={height * (e.start % (1 / resolution)) * resolution}
+				height={height * unixToHours(e.duration) * resolution}
+				offset={height * unixToLeftover(e.duration, resolution) * resolution}
 				editing={isDragging}
 				on:delete={(e) => deleteEntry(e.detail)}
 				on:update={(e) => updateEntry(e.detail.uuid, e.detail.entry)}

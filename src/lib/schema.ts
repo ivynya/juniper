@@ -4,10 +4,8 @@ export interface Entry {
 	task: string;
 	project: string;
 	client: string;
-	z_start: string; // ISO 8601 DateTime
-	z_end: string; // ISO 8601 DateTime
-	start: number; // 0-23 hours
-	end: number; // 0-23 hours
+	start: number; // unix ms start
+	end: number; // unix ms end
 	duration: number; // precomputed end - start
 	tags: string[];
 }

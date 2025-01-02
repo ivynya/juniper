@@ -8,8 +8,6 @@ export const entries = writable<Entry[]>([
 		task: 'Loading data...',
 		project: 'App',
 		client: 'Fauna',
-		z_start: new Date().toISOString(),
-		z_end: new Date().toISOString(),
 		start: 0,
 		end: 0,
 		duration: 0,
@@ -62,7 +60,8 @@ export function computeColumns(entries: Entry[]): Entry[] {
 }
 
 // format fractional hours as HH:MM:SS or HH:MM
-export function formatHour(hour: number, includeSeconds: boolean = true): string {
+export function formatHour(hour: number): string {
+	hour = hour / (60 * 60 * 1000);
 	const hrs = Math.floor(hour);
 	const min = Math.round((hour % 1) * 60)
 		.toString()
@@ -70,16 +69,15 @@ export function formatHour(hour: number, includeSeconds: boolean = true): string
 	const sec = Math.floor(((hour * 60) % 1) * 60)
 		.toString()
 		.padStart(2, '0');
-	if (includeSeconds) return `${hrs < 10 ? `0${hrs}` : hrs}:${min}:${sec}`;
-	else return `${hrs < 10 ? `0${hrs}` : hrs}:${min}`;
+	return `${hrs < 10 ? `0${hrs}` : hrs}:${min}:${sec}`;
 }
 
 export function tz(hour: number): number {
-	const offset = new Date().getTimezoneOffset() / 60;
+	const offset = new Date().getTimezoneOffset() * 60 * 1000;
 	return hour + offset;
 }
 
 export function ut(hour: number): number {
-	const offset = new Date().getTimezoneOffset() / 60;
+	const offset = new Date().getTimezoneOffset() * 60 * 1000;
 	return hour - offset;
 }

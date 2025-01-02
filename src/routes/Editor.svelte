@@ -1,5 +1,4 @@
 <script lang="ts">
-	import EditorDate from './EditorDate.svelte';
 	import EditorTime from './EditorTime.svelte';
 	import { clients, tz, ut, formatHour } from '$lib/app';
 	import { createEventDispatcher } from 'svelte';
@@ -27,18 +26,14 @@
 	};
 
 	function updStart(e: CustomEvent) {
-		entry.start = ut(e.detail.time);
+		const base = new Date(entry.start).setHours(0, 0, 0, 0);
+		entry.start = base + e.detail.time;
 		entry.duration = Math.abs(entry.end - entry.start);
-		const start = new Date(entry.z_start);
-		start.setHours(e.detail.time, Math.round((e.detail.time % 1) * 60));
-		entry.z_start = start.toISOString();
 	}
 	function updEnd(e: CustomEvent) {
-		entry.end = ut(e.detail.time);
+		const base = new Date(entry.end).setHours(0, 0, 0, 0);
+		entry.end = base + e.detail.time;
 		entry.duration = Math.abs(entry.end - entry.start);
-		const end = new Date(entry.z_end);
-		end.setHours(e.detail.time, Math.round((e.detail.time % 1) * 60));
-		entry.z_end = end.toISOString();
 	}
 
 	function del(e: Event) {
@@ -79,17 +74,9 @@
 		</select>
 	</div>
 	<div class="startEnd">
-		<EditorDate date={new Date(entry.z_start).getDate()} />
-		<EditorTime time={tz(entry.start)} on:upd={updStart} />
+		<EditorTime time={entry.start} on:upd={updStart} />
 		<ArrowRight size="20px" color="var(--a1)" />
-		<EditorTime time={tz(entry.end)} on:upd={updEnd} />
-	</div>
-	<div>
-		<p>{entry.z_start}</p>
-		<p>{entry.z_end}</p>
-		<p>{entry.start}</p>
-		<p>{entry.end}</p>
-		<p>{entry.duration} {formatHour(entry.duration)}</p>
+		<EditorTime time={entry.end} on:upd={updEnd} />
 	</div>
 	<div class="tags">
 		<label for="editor-tags">Tags</label>

@@ -17,10 +17,10 @@
 	export let showCalControls: boolean = false;
 	export let todayDate: string = new Date().toDateString();
 
-	let today: Entry[] = $entries.filter((e) => new Date(e.z_start).toDateString() === todayDate);
 	let todayOffset: number = 0;
 	let active = false;
 
+	$: today = $entries.filter((e) => new Date(e.start).toDateString() === todayDate);
 	$: [clientName, projectName] = $inputData.clientProject.split(',');
 	$: client = $clients.find((c) => c.name === clientName) || {
 		color: 'var(--b3)',
@@ -70,8 +70,6 @@
 			task: $inputData.task,
 			project: projectName,
 			client: clientName,
-			z_start: $inputData.start,
-			z_end: new Date().toISOString(),
 			start: timeA,
 			end: timeB,
 			duration: Math.abs(timeB - timeA),

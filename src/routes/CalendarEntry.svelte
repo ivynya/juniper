@@ -35,9 +35,14 @@
 
 		const screenWidth = window.innerWidth;
 		const editorWidth = 300;
+		const editorHeight = 300;
 		const right = e.clientX + editorWidth;
+		const bottom = e.clientY + editorHeight;
 		if (right > screenWidth) {
 			editX -= ((right - screenWidth + 20) / rect.width) * 100;
+		}
+		if (bottom > window.innerHeight) {
+			editY -= ((bottom - window.innerHeight + 20) / rect.height) * 100;
 		}
 	}
 	function closeEditor(e: Event) {

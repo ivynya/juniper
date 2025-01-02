@@ -6,18 +6,27 @@
 
 	let hrEl: HTMLElement;
 	let minEl: HTMLElement;
+	let amEl: HTMLElement;
 	let hr: number = 0;
 	let min: number = 0;
+	let pm: boolean = false;
 	export let time: number = 0;
 
 	function updTime() {
-		time = hr + min / 60;
+		time = hr * 60 * 60 * 1000 + min * 60 * 1000;
 		dispatch('upd', { time });
 	}
 
+	function hourToTime(hour: number) {
+		return hour % 12 || 12;
+	}
+
 	onMount(() => {
-		hr = Math.floor(time);
-		min = (time % 1) * 60;
+		const base = new Date(time).setHours(0, 0, 0, 0);
+		time = time - base;
+		hr = Math.floor(time / (60 * 60 * 1000));
+		min = Math.floor((time % (60 * 60 * 1000)) / (60 * 1000));
+		pm = hr >= 12;
 
 		hrEl.scrollTo({
 			top: hr * 20,
@@ -27,34 +36,50 @@
 			top: min * 20,
 			behavior: 'instant'
 		});
+		amEl.scrollTo({
+			top: pm ? 20 : 0,
+			behavior: 'instant'
+		});
 
 		hrEl.addEventListener('scroll', () => {
 			const index = Math.round(hrEl.scrollTop / 20);
-			hr = index;
+			hr = Math.max(Math.min(index, 23), 0);
+			pm = hr >= 12;
+			amEl.scrollTo({
+				top: pm ? 20 : 0,
+				behavior: 'instant'
+			});
 			updTime();
 		});
 		minEl.addEventListener('scroll', () => {
 			const index = Math.round(minEl.scrollTop / 20);
-			min = index;
+			min = Math.max(Math.min(index, 59), 0);
 			updTime();
 		});
 	});
 </script>
 
 <div class="picker">
-	<div class="hour" bind:this={hrEl}>
+	<div class="scroll" bind:this={hrEl}>
 		<span>--</span>
 		{#each Array(24) as _, i}
-			<span class:hl={hr === i}>{i.toString().padStart(2, '0')}</span>
+			<span class:hl={hr === i}>{hourToTime(i).toString().padStart(2, '0')}</span>
 		{/each}
 		<span>--</span>
 	</div>
 	<b>:</b>
-	<div class="minute" bind:this={minEl}>
+	<div class="scroll" bind:this={minEl}>
 		<span>--</span>
 		{#each Array(60) as _, i}
 			<span class:hl={min === i}>{i.toString().padStart(2, '0')}</span>
 		{/each}
+		<span>--</span>
+	</div>
+	<br />
+	<div class="scroll no-input" bind:this={amEl}>
+		<span>--</span>
+		<span class:hl={!pm}>AM</span>
+		<span class:hl={pm}>PM</span>
 		<span>--</span>
 	</div>
 </div>
@@ -74,8 +99,10 @@
 		margin-bottom: 0.125rem;
 	}
 
-	.hour,
-	.minute {
+	.scroll {
+		border: 1px solid var(--b2);
+		border-radius: 5px;
+		padding: 0 0.25rem;
 		display: flex;
 		flex-direction: column;
 		gap: 0.25rem;
@@ -102,6 +129,12 @@
 		}
 		> span:last-of-type {
 			margin-bottom: 0.25rem;
+		}
+
+		&.no-input {
+			border: none;
+			padding: 0;
+			pointer-events: none;
 		}
 	}
 </style>
