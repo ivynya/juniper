@@ -107,11 +107,13 @@
 		</datalist>
 		<select class="project" bind:value={$inputData.clientProject} style="color: {project.color};">
 			{#each $clients as client}
-				<optgroup label={client.name}>
-					{#each client.projects as project}
-						<option value={client.name + ',' + project.name}>{project.name}</option>
-					{/each}
-				</optgroup>
+				{#if client.projects.filter((p) => !p.__archived__).length > 0}
+					<optgroup label={client.name}>
+						{#each client.projects.filter((p) => !p.__archived__) as project}
+							<option value={client.name + ',' + project.name}>{project.name}</option>
+						{/each}
+					</optgroup>
+				{/if}
 			{/each}
 		</select>
 		<button>

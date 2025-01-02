@@ -68,9 +68,16 @@
 		<label for="editor-project">Project</label>
 		<Layers size="10px" color={project.color} />
 		<select id="editor-project" bind:value={entry.project} style="color: {project.color}">
-			{#each client.projects as project}
-				<option value={project.name}>{project.name}</option>
-			{/each}
+			<optgroup label="Active">
+				{#each client.projects.filter((p) => !p.__archived__) as project}
+					<option value={project.name}>{project.name}</option>
+				{/each}
+			</optgroup>
+			<optgroup label="Archived">
+				{#each client.projects.filter((p) => p.__archived__) as project}
+					<option value={project.name}>{project.name}</option>
+				{/each}
+			</optgroup>
 		</select>
 	</div>
 	<div class="startEnd">
