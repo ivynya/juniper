@@ -65,3 +65,31 @@ export function parseCSV(csv: string): ParseResult {
 		}
 	};
 }
+
+export function formatCSV(p: ParseResult): string[] {
+	const dataHeader = ['Task', 'Project', 'Client', 'Start', 'End', 'Duration', 'Tags'];
+	const data = p.entries.map((entry) => {
+		return [
+			entry.task,
+			entry.project,
+			entry.client,
+			new Date(entry.start).toISOString(),
+			new Date(entry.end).toISOString(),
+			entry.duration,
+			entry.tags.join(';')
+		].join(',');
+	});
+	const entryExport = dataHeader.join(',') + '\n' + data.join('\n');
+
+	const metaHeader = ['Client', 'Color', 'Project', 'ProjectColor'];
+	const meta = p.clients.map((client) => {
+		return client.projects
+			.map((project) => {
+				return [client.name, client.color, project.name, project.color].join(',');
+			})
+			.join('\n');
+	});
+	const metaExport = metaHeader.join(',') + '\n' + meta.join('\n');
+
+	return [entryExport, metaExport];
+}
