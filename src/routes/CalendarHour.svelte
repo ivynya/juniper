@@ -109,7 +109,7 @@
 >
 	<span class="row">
 		{#if i % resolution === 0}
-			<span class="label">{(i / resolution).toString().padStart(2, '0')}:00</span>
+			<span class="label">{((i / resolution) % 12 || 12).toString().padStart(2, '0')}:00</span>
 			<hr />
 		{:else}
 			<span class="label" style="opacity: 0.25;">·····</span>
