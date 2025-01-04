@@ -9,10 +9,9 @@
 		Tag
 	} from 'lucide-svelte';
 	import { entries, clients, inputData, formatHour } from '$lib/app';
-	import type { Entry } from '$lib/schema';
 	import { nanoid } from '$lib/nanoid';
 
-	export let resolution: number = 2;
+	export let resolution: number = 4;
 	export let wakingHoursOnly: boolean = false;
 	export let showCalControls: boolean = false;
 	export let todayDate: string = new Date().toDateString();
@@ -59,10 +58,8 @@
 	function stopTimer() {
 		if ($inputData.start == undefined) return;
 
-		const start = new Date($inputData.start);
-		const end = new Date();
-		const timeA = start.getHours() + start.getMinutes() / 60 + start.getSeconds() / 3600;
-		const timeB = end.getHours() + end.getMinutes() / 60 + end.getSeconds() / 3600;
+		const start = new Date($inputData.start).getTime();
+		const end = new Date().getTime();
 
 		$entries.push({
 			__uuid__: nanoid(),
@@ -70,9 +67,9 @@
 			task: $inputData.task,
 			project: projectName,
 			client: clientName,
-			start: timeA,
-			end: timeB,
-			duration: Math.abs(timeB - timeA),
+			start: start,
+			end: end,
+			duration: Math.abs(end - start),
 			tags: []
 		});
 		$entries = $entries;
@@ -84,7 +81,7 @@
 			if ($inputData.start === undefined) return;
 			const start = new Date($inputData.start);
 			const now = new Date();
-			duration = Math.floor((now.getTime() - start.getTime()) / 1000);
+			duration = now.getTime() - start.getTime();
 			console.log('timer running');
 		}, 1000);
 	}
@@ -130,7 +127,7 @@
 	{#if timerActive}
 		<section class="timer">
 			<button>started</button>
-			<span>{formatHour(duration / 3600)}</span>
+			<span>{formatHour(duration)}</span>
 		</section>
 	{/if}
 	<section class="opts">

@@ -29,7 +29,7 @@
 		{
 			__uuid__: '',
 			__column__: computeColumn(today, todayTime + _scaleA, todayTime + _scaleB),
-			task: 'New entry',
+			task: $inputData.task || 'New entry',
 			project: $inputData.clientProject.split(',')[1],
 			client: $inputData.clientProject.split(',')[0],
 			start: todayTime + _scaleA,
@@ -69,7 +69,7 @@
 		$entries.push({
 			__uuid__: nanoid(),
 			__column__: 0,
-			task: 'New entry',
+			task: $inputData.task || 'New entry',
 			project: $inputData.clientProject.split(',')[1],
 			client: $inputData.clientProject.split(',')[0],
 			start: todayTime + _scaleA,

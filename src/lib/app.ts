@@ -63,7 +63,7 @@ export function computeColumns(entries: Entry[]): Entry[] {
 export function formatHour(hour: number): string {
 	hour = hour / (60 * 60 * 1000);
 	const hrs = Math.floor(hour);
-	const min = Math.round((hour % 1) * 60)
+	const min = Math.floor((hour % 1) * 60)
 		.toString()
 		.padStart(2, '0');
 	const sec = Math.floor(((hour * 60) % 1) * 60)
