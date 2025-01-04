@@ -19,6 +19,7 @@
 	$: height = 30 - resolution * 5;
 	$: naptime = i / resolution < 6 || i / resolution == 23;
 	$: highlighted = isDragging && i >= timeA && i <= timeB;
+	$: hl = Math.floor(new Date().getHours() * resolution) === i; // if current hour is this hour
 
 	$: _scaleA = (timeA / resolution) * 60 * 60 * 1000;
 	$: _scaleB = (timeB / resolution) * 60 * 60 * 1000;
@@ -109,7 +110,9 @@
 >
 	<span class="row">
 		{#if i % resolution === 0}
-			<span class="label">{((i / resolution) % 12 || 12).toString().padStart(2, '0')}:00</span>
+			<span class="label" class:hl
+				>{((i / resolution) % 12 || 12).toString().padStart(2, '0')}:00</span
+			>
 			<hr />
 		{:else}
 			<span class="label" style="opacity: 0.25;">·····</span>
@@ -155,6 +158,10 @@
 
 			.label {
 				color: var(--b2);
+
+				&.hl {
+					color: var(--a1);
+				}
 			}
 
 			> hr {

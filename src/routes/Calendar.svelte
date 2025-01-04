@@ -1,9 +1,8 @@
 <script lang="ts">
 	import CalendarHour from './CalendarHour.svelte';
 	import Input from './Input.svelte';
-	import { entries } from '$lib/app';
 
-	let resolution = 2;
+	let resolution = 4;
 	let wakingHoursOnly = false;
 	let todayDate: string;
 
