@@ -7,7 +7,7 @@
 </script>
 
 <div class="slider">
-	<span style="transform:translateX({leftness}%);width:{ratchet}%;" />
+	<span style="transform:translateX({leftness}%);width:{ratchet}%;"></span>
 	<div class="options">
 		{#each options as o, i}
 			<button class:active={i === active} on:click={() => (selected = o)}>

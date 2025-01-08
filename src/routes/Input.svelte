@@ -99,7 +99,7 @@
 		/>
 		<datalist id="task-suggestions">
 			{#each suggestions as suggestion}
-				<option value={suggestion} />
+				<option value={suggestion}></option>
 			{/each}
 		</datalist>
 		<select class="project" bind:value={$inputData.clientProject} style="color: {project.color};">
