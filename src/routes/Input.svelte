@@ -135,7 +135,7 @@
 			<Clock size="18px" />
 			{formatHour(total)} today
 		</span>
-		<span class="spacer" />
+		<span class="spacer"></span>
 		{#if showCalControls}
 			<button class="resolution" on:click={cycleResolution}>
 				{resolution}x
