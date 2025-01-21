@@ -71,18 +71,26 @@
 	<h3>CLIENTS & PROJECTS</h3>
 	{#each $clients as client}
 		<div class="client" style="--client: {client.color};">
-			<h4>{client.name} {client.color} <input type="color" bind:value={client.color} /></h4>
-			{#each client.projects as project, p}
-				<div class="project" style="--project: {project.color};">
-					<span>{project.name}</span>
-					<input type="color" bind:value={client.projects[p].color} />
-					<input type="checkbox" bind:checked={client.projects[p].__archived__} />
-				</div>
-			{/each}
-			<form>
-				<input type="text" bind:value={projectName} />
-				<button on:click={() => createProject(client)}>+</button>
-			</form>
+			<h4>
+				<span>{client.name} [{client.color}] <input type="color" bind:value={client.color} /></span>
+			</h4>
+			<div class="content">
+				{#each client.projects as project, p}
+					<div
+						class="project"
+						style="--project: {project.color};"
+						class:archived={project.__archived__}
+					>
+						<span>{project.name}</span>
+						<input type="color" bind:value={client.projects[p].color} />
+						<input type="checkbox" bind:checked={client.projects[p].__archived__} />
+					</div>
+				{/each}
+				<form class="adder">
+					<input type="text" bind:value={projectName} />
+					<button on:click={() => createProject(client)}>+</button>
+				</form>
+			</div>
 		</div>
 	{/each}
 
@@ -138,21 +146,71 @@
 	}
 
 	.client {
+		background: radial-gradient(var(--client) 1px, transparent 1px);
+		background-size: 2px 2px;
 		border: 1px solid var(--client);
-		border-radius: 0.25rem;
+		border-radius: 0.5rem;
 		margin: 0.5rem 0;
-		padding: 0.25rem 0.5rem;
 
 		h4 {
 			color: var(--client);
 			font-size: 1rem;
 			margin: 0;
+			padding: 0.125rem 0.25rem;
+
+			span {
+				background: var(--b0);
+				border: 1px solid var(--client);
+				border-radius: 0.5rem;
+				display: flex;
+				align-items: center;
+				gap: 0.25rem;
+				padding: 0 0.5rem;
+				width: fit-content;
+			}
 		}
 
 		span {
 			color: var(--project);
 			font-size: 0.8rem;
 			margin: 0;
+		}
+
+		.content {
+			background-color: var(--b0);
+			border: 1px solid var(--client);
+			border-radius: 0.5rem;
+			margin: 0 0.25rem;
+			margin-right: 1rem;
+			margin-bottom: 0.25rem;
+			padding: 0.25rem 0.5rem;
+
+			.project.archived {
+				background: repeating-linear-gradient(
+					45deg,
+					var(--project),
+					var(--project) 1px,
+					transparent 1px,
+					transparent 3px
+				);
+				opacity: 0.5;
+				width: fit-content;
+			}
+
+			.adder {
+				display: flex;
+				align-items: center;
+				gap: 0.25rem;
+			}
+			.adder input {
+				background: transparent;
+				border: 1px solid var(--b3);
+				border-radius: 0.25rem;
+				color: var(--a1);
+				font-family: inherit;
+				font-size: 0.8rem;
+				padding: 0.125rem 0.25rem;
+			}
 		}
 	}
 
