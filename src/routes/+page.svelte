@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Calendar from './Calendar.svelte';
-	import Export from './Export.svelte';
 	import Header from './Header.svelte';
+	import Manage from './Manage.svelte';
 	import List from './List.svelte';
 	import Report from './Report.svelte';
 
@@ -26,7 +26,7 @@
 	{:else if selected === 'Report'}
 		<Report />
 	{:else}
-		<Export />
+		<Manage />
 	{/if}
 </section>
 
