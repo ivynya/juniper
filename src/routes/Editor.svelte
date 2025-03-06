@@ -1,58 +1,64 @@
 <script lang="ts">
 	import EditorTime from './EditorTime.svelte';
 	import { clients, tz, ut, formatHour } from '$lib/app';
-	import { createEventDispatcher } from 'svelte';
 	import { scale } from 'svelte/transition';
 	import { ArrowRight, Check, Circle, Kanban, Layers, Tag, Trash } from 'lucide-svelte';
 	import type { Entry } from '$lib/schema';
 
-	const dispatch = createEventDispatcher();
+	interface Props {
+		entry: Entry;
+		x: number;
+		y: number;
+		del: () => void;
+		upd: () => void;
+	}
+	let { entry = $bindable(), x, y, del, upd }: Props = $props();
 
-	export let entry: Entry;
-	export let x: number;
-	export let y: number;
-
-	$: pos = `top: ${y + 1}%; left: ${x}%;`;
+	const pos = $derived(`top: ${y + 1}%; left: ${x}%;`);
 	let trans = { start: 0.95, duration: 200 };
 
-	$: client = $clients.find((c) => c.name === entry.client) || {
-		color: 'var(--b3)',
-		name: '',
-		projects: []
-	};
-	$: project = client.projects.find((p) => p.name === entry.project) || {
-		color: 'var(--b3)',
-		name: ''
-	};
+	const client = $derived(
+		$clients.find((c) => c.name === entry.client) || {
+			color: 'var(--b3)',
+			name: '',
+			projects: []
+		}
+	);
+	const project = $derived(
+		client.projects.find((p) => p.name === entry.project) || {
+			color: 'var(--b3)',
+			name: ''
+		}
+	);
 
-	function updStart(e: CustomEvent) {
-		const base = new Date(entry.start).setHours(0, 0, 0, 0);
-		entry.start = base + e.detail.time;
+	function updStart(t: number) {
+		//entry.start = t;
 		entry.duration = Math.abs(entry.end - entry.start);
 	}
-	function updEnd(e: CustomEvent) {
-		const base = new Date(entry.end).setHours(0, 0, 0, 0);
-		entry.end = base + e.detail.time;
+	function updEnd(t: number) {
+		//entry.end = t;
 		entry.duration = Math.abs(entry.end - entry.start);
 	}
 
-	function del(e: Event) {
+	function delE(e: Event) {
 		e.preventDefault();
-		dispatch('delete');
+		del();
 	}
-	function upd(e: Event) {
+	function updE(e: Event) {
 		e.preventDefault();
 		entry.duration = Math.abs(entry.end - entry.start);
-		dispatch('update');
+		alert(entry.start);
+		upd();
 	}
 	function prevent(e: Event) {
 		e.stopPropagation();
 	}
 </script>
 
-<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<form class="editor" style={pos} on:click={prevent} transition:scale={trans} on:submit={upd}>
+<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+<form class="editor" style={pos} onclick={prevent} transition:scale={trans} onsubmit={updE}>
 	<h6><span>Entry Editor</span></h6>
 	<div class="clientProject">
 		<label for="editor-task">Task</label>
@@ -81,10 +87,11 @@
 		</select>
 	</div>
 	<div class="startEnd">
-		<EditorTime time={entry.start} on:upd={updStart} />
+		<EditorTime val={entry.start} upd={updStart} />
 		<ArrowRight size="20px" color="var(--a1)" />
-		<EditorTime time={entry.end} on:upd={updEnd} />
+		<EditorTime val={entry.end} upd={updEnd} />
 	</div>
+	{entry.start}
 	<div class="tags">
 		<label for="editor-tags">Tags</label>
 		<Tag size="10px" color="var(--a1)" />
@@ -92,7 +99,7 @@
 	</div>
 	<br />
 	<div class="save">
-		<button on:click={del} type="button"><Trash size="12px" />Bye</button>
+		<button onclick={delE} type="button"><Trash size="12px" />Bye</button>
 		<button type="submit"><Check size="12px" />Save</button>
 	</div>
 </form>

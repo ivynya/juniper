@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { entries, clients, inputData, computeColumn } from '$lib/app';
-	import { formatCSV, parseCSV } from '$lib/csv';
+	import { formatCSV, parseFaunaCSV, parseTogglCSV } from '$lib/csv';
 	import { resetStorage } from '$lib/data';
 	import { CirclePower, Origami } from 'lucide-svelte';
 	import type { Entry, Client } from '$lib/schema';
 
-	let raw: string[][] = [];
+	let raw = '';
+	let rawmeta = '';
 	let data: Entry[] = [];
 
 	function handleFileUpload(event: Event) {
@@ -13,23 +14,48 @@
 		if (!target || !target.files) return;
 		if (target.files.length === 0) return;
 		const file = target.files[0];
-		console.log(target.files);
 		if (file) {
 			const reader = new FileReader();
 			reader.onload = (e) => {
 				if (!e.target) return;
-				const content = e.target.result as string;
-				raw = content.split('\n').map((line) => line.split(','));
-				const parse = parseCSV(content);
-				data = parse.entries;
-				for (let i = 0; i < data.length; i++) {
-					data[i].__column__ = computeColumn(data, data[i].start, data[i].end);
-				}
-				entries.set(data);
-				clients.set(parse.clients);
+				raw = e.target.result as string;
 			};
 			reader.readAsText(file);
 		}
+	}
+
+	function handleMetaUpload(event: Event) {
+		let target = event.target as HTMLInputElement;
+		if (!target || !target.files) return;
+		const file = target.files[0];
+		if (file) {
+			const reader = new FileReader();
+			reader.onload = (e) => {
+				if (!e.target) return;
+				rawmeta = e.target.result as string;
+			};
+			reader.readAsText(file);
+		}
+	}
+
+	function importAsFauna() {
+		const parse = parseFaunaCSV(raw, rawmeta);
+		data = parse.entries;
+		for (let i = 0; i < data.length; i++) {
+			data[i].__column__ = computeColumn(data, data[i].start, data[i].end);
+		}
+		entries.set(data);
+		clients.set(parse.clients);
+	}
+
+	function importAsToggl() {
+		const parse = parseTogglCSV(raw);
+		data = parse.entries;
+		for (let i = 0; i < data.length; i++) {
+			data[i].__column__ = computeColumn(data, data[i].start, data[i].end);
+		}
+		entries.set(data);
+		clients.set(parse.clients);
 	}
 
 	function exportData() {
@@ -105,10 +131,15 @@
 
 	<h3>IMPORT</h3>
 	<div class="import">
-		<button><CirclePower size="14px" />From Toggl Track</button>
-		<button><Origami size="14px" />From Fauna Export</button>
+		<button on:click={() => importAsToggl()}><CirclePower size="14px" />From Toggl Track</button>
+		<button on:click={() => importAsFauna()}><Origami size="14px" />From Fauna Export</button>
 	</div>
+	<b>data:</b>
 	<input type="file" accept=".csv" on:change={handleFileUpload} />
+	<b>meta:</b>
+	<input type="file" accept=".csv" on:change={handleMetaUpload} />
+	<p>meta content loaded: {rawmeta !== ''}</p>
+	<p>file content loaded: {raw !== ''}</p>
 	<p>imported {data.length} entries</p>
 </section>
 

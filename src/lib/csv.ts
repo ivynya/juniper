@@ -7,7 +7,84 @@ export interface ParseResult {
 	input: InputData;
 }
 
-export function parseCSV(csv: string): ParseResult {
+export function parseFaunaCSV(csv: string, ccsv: string): ParseResult {
+	const rows = csv
+		.split('\n')
+		.map((row) => row.split(',').map((cell) => cell.trim().replaceAll('"', '')));
+	const header = rows[0];
+	const data = rows.slice(1);
+
+	const entries = data.map((row) => {
+		const z_start = row[header.indexOf('Start')];
+		const z_end = row[header.indexOf('End')];
+		const start = new Date(z_start).getTime();
+		const end = new Date(z_end).getTime();
+
+		const entry: Entry = {
+			__uuid__: nanoid(),
+			__column__: 0,
+			task: row[header.indexOf('Task')],
+			project: row[header.indexOf('Project')],
+			client: row[header.indexOf('Client')],
+			start: start,
+			end: end,
+			duration: parseInt(row[header.indexOf('Duration')]),
+			tags: row[header.indexOf('Tags')].split(',').map((tag) => tag.trim())
+		};
+		return entry;
+	});
+
+	const clients = parseFaunaMetaCSV(ccsv);
+
+	return {
+		entries,
+		clients,
+		input: {
+			task: '',
+			clientProject: ',',
+			start: undefined
+		}
+	};
+}
+
+function parseFaunaMetaCSV(csv: string): Client[] {
+	const rows = csv
+		.split('\n')
+		.map((row) => row.split(',').map((cell) => cell.trim().replaceAll('"', '')));
+	const header = rows[0];
+
+	const clients: Client[] = [];
+
+	for (const row of rows.slice(1)) {
+		const client = row[header.indexOf('Client')];
+		if (!clients.some((c) => c.name === client)) {
+			clients.push({
+				name: client,
+				color: row[header.indexOf('Color')],
+				projects: [
+					{
+						__archived__: false,
+						name: row[header.indexOf('Project')],
+						color: row[header.indexOf('ProjectColor')]
+					}
+				]
+			});
+		} else {
+			const project = row[header.indexOf('Project')];
+			clients
+				.find((c) => c.name === client)
+				?.projects.push({
+					__archived__: false,
+					name: project,
+					color: row[header.indexOf('ProjectColor')]
+				});
+		}
+	}
+
+	return clients;
+}
+
+export function parseTogglCSV(csv: string): ParseResult {
 	const rows = csv
 		.split('\n')
 		.map((row) => row.split(',').map((cell) => cell.trim().replaceAll('"', '')));
@@ -34,7 +111,21 @@ export function parseCSV(csv: string): ParseResult {
 		return entry;
 	});
 
-	const clients = entries
+	const clients = deriveClients(entries);
+
+	return {
+		entries,
+		clients,
+		input: {
+			task: '',
+			clientProject: ',',
+			start: undefined
+		}
+	};
+}
+
+function deriveClients(entries: Entry[]): Client[] {
+	return entries
 		.map((entry) => entry.client)
 		.filter((client, index, self) => self.indexOf(client) === index)
 		.map((client) => {
@@ -46,24 +137,10 @@ export function parseCSV(csv: string): ParseResult {
 					.map((entry) => entry.project)
 					.filter((project, index, self) => self.indexOf(project) === index)
 					.map((project) => {
-						return {
-							__archived__: false,
-							name: project,
-							color: '#678e98'
-						};
+						return { __archived__: false, name: project, color: '#678e98' };
 					})
 			};
 		});
-
-	return {
-		entries,
-		clients,
-		input: {
-			task: '',
-			clientProject: ',',
-			start: undefined
-		}
-	};
 }
 
 export function formatCSV(p: ParseResult): string[] {

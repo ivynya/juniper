@@ -87,7 +87,7 @@
 		<span>{formatHour(entry.duration)}</span>
 	</div>
 	{#if edit}
-		<Editor bind:entry y={editY} x={editX} on:update={upd} on:delete={del} />
+		<Editor bind:entry y={editY} x={editX} {upd} {del} />
 	{/if}
 </button>
 

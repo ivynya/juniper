@@ -1,20 +1,27 @@
 <script lang="ts">
-	import { tz, ut } from '$lib/app';
-	import { createEventDispatcher, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 
-	const dispatch = createEventDispatcher();
+	interface Props {
+		val: number;
+		upd: (time: number) => void;
+	}
+	let { val, upd }: Props = $props();
 
 	let hrEl: HTMLElement;
 	let minEl: HTMLElement;
 	let amEl: HTMLElement;
-	let hr: number = 0;
-	let min: number = 0;
-	let pm: boolean = false;
-	export let time: number = 0;
+	let hr: number = $state(0);
+	let min: number = $state(0);
+	let pm: boolean = $state(false);
+
+	let time: number = $state(0);
+	const base = $derived(new Date(val).setHours(0, 0, 0, 0));
+
+	let testIndex = $state(0);
 
 	function updTime() {
 		time = hr * 60 * 60 * 1000 + min * 60 * 1000;
-		dispatch('upd', { time });
+		upd(base + time);
 	}
 
 	function hourToTime(hour: number) {
@@ -22,8 +29,8 @@
 	}
 
 	onMount(() => {
-		const base = new Date(time).setHours(0, 0, 0, 0);
-		time = time - base;
+		const base = new Date(val).setHours(0, 0, 0, 0);
+		time = val - base;
 		hr = Math.floor(time / (60 * 60 * 1000));
 		min = Math.floor((time % (60 * 60 * 1000)) / (60 * 1000));
 		pm = hr >= 12;
@@ -43,6 +50,7 @@
 
 		hrEl.addEventListener('scroll', () => {
 			const index = Math.round(hrEl.scrollTop / 20);
+			testIndex = index;
 			hr = Math.max(Math.min(index, 23), 0);
 			pm = hr >= 12;
 			amEl.scrollTo({
@@ -83,6 +91,13 @@
 		<span>--</span>
 	</div>
 </div>
+{base}
+{base + time === val}
+{val}
+{time}
+{min}
+{hr * 60 * 60 * 1000}
+{testIndex}
 
 <style lang="scss">
 	.picker {

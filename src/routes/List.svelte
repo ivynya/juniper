@@ -7,7 +7,7 @@
 
 	$: groups = $entries
 		.sort((a, b) => b.start - a.start)
-		.slice(0, Math.min($entries.length, 250))
+		.slice(0, Math.min($entries.length, 250000))
 		.reduce(
 			(acc, entry) => {
 				const date = new Date(entry.start);
