@@ -32,11 +32,11 @@
 	);
 
 	function updStart(t: number) {
-		//entry.start = t;
+		entry.start = t;
 		entry.duration = Math.abs(entry.end - entry.start);
 	}
 	function updEnd(t: number) {
-		//entry.end = t;
+		entry.end = t;
 		entry.duration = Math.abs(entry.end - entry.start);
 	}
 
@@ -47,7 +47,6 @@
 	function updE(e: Event) {
 		e.preventDefault();
 		entry.duration = Math.abs(entry.end - entry.start);
-		alert(entry.start);
 		upd();
 	}
 	function prevent(e: Event) {
@@ -87,11 +86,10 @@
 		</select>
 	</div>
 	<div class="startEnd">
-		<EditorTime val={entry.start} upd={updStart} />
+		<EditorTime val={entry.start} inv={entry.end} upd={updStart} />
 		<ArrowRight size="20px" color="var(--a1)" />
-		<EditorTime val={entry.end} upd={updEnd} />
+		<EditorTime val={entry.end} inv={-entry.start} upd={updEnd} />
 	</div>
-	{entry.start}
 	<div class="tags">
 		<label for="editor-tags">Tags</label>
 		<Tag size="10px" color="var(--a1)" />
