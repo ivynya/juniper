@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { clients, entries, formatHour } from '$lib/app';
 	import { getDataPeriod } from '$lib/metric';
-	import HeaderViews from './HeaderViews.svelte';
 	import ListEntry from './ListEntry.svelte';
 	import ReportChart from './ReportChart.svelte';
+	import Slider from './Slider.svelte';
 
 	let projects = $clients.map((c) => c.projects).flat();
 
@@ -37,8 +37,8 @@
 	</div>
 
 	<div class="controls">
-		<HeaderViews options={['month', 'week', 'day']} bind:selected={divisor} />
-		<HeaderViews options={['project', 'task']} bind:selected={showBy} />
+		<Slider options={['month', 'week', 'day']} bind:selected={divisor} />
+		<Slider options={['project', 'task']} bind:selected={showBy} />
 	</div>
 	<div class="controls">
 		<input type="date" bind:value={start} />

@@ -1,12 +1,12 @@
 <script lang="ts">
-	import HeaderViews from './HeaderViews.svelte';
+	import Slider from './Slider.svelte';
 
 	export let selected: string;
 </script>
 
 <header>
 	<h1><span>FAUNA</span></h1>
-	<HeaderViews options={['List', 'Calendar', 'Report']} bind:selected />
+	<Slider options={['List', 'Calendar', 'Report']} bind:selected />
 </header>
 
 <style lang="scss">
