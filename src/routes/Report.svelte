@@ -7,7 +7,7 @@
 
 	let projects = $clients.map((c) => c.projects).flat();
 
-	let showBy: 'project' | 'task' = $state('project');
+	let by: 'project' | 'task' = $state('project');
 	let start: string = $state(
 		new Date(new Date(new Date().getTime() - 36e5 * 24 * 7).setHours(0, 0, 0, 0))
 			.toISOString()
@@ -18,13 +18,13 @@
 	let ex: string = $state(''); // filter property
 	let exs: string[] = $derived(ex.split(','));
 
-	let from = $derived(new Date(start).getTime());
-	let computed = $derived(getDataPeriod($entries, projects, from, divisor, periods, showBy, exs));
+	let from = $derived(new Date(start).getTime() + new Date().getTimezoneOffset() * 6e4);
+	let computed = $derived(getDataPeriod($entries, projects, from, divisor, periods + 1, by, exs));
 </script>
 
 <section>
 	<h3>
-		<span>{divisor}:{showBy} Graph</span>
+		<span>{divisor}:{by} Graph</span>
 		<span><small>{computed.entries.length}E</small> / {formatHour(computed.time)}</span>
 	</h3>
 
@@ -38,7 +38,7 @@
 
 	<div class="controls">
 		<Slider options={['month', 'week', 'day']} bind:selected={divisor} />
-		<Slider options={['project', 'task']} bind:selected={showBy} />
+		<Slider options={['project', 'task']} bind:selected={by} />
 	</div>
 	<div class="controls">
 		<input type="date" bind:value={start} />

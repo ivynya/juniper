@@ -66,7 +66,7 @@ export function getDataPeriod(
 	});
 	const chartLabels: string[][] = new Array(gn)
 		.fill(0)
-		.map((x, i) => new Date(new Date(start + gt * i + 36e5 * 24).setHours(0, 0, 0, 0)))
+		.map((x, i) => new Date(new Date(start + gt * i).setHours(0, 0, 0, 0)))
 		.map((t, i) => [
 			t.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit' }),
 			times[i] > 99 ? `${times[i].toFixed()}hr` : formatHour(times[i] * 1000 * 60 * 60).slice(0, 5)
