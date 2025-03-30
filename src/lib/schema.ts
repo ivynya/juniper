@@ -1,3 +1,5 @@
+import type { ChartData } from 'chart.js';
+
 export interface Entry {
 	__uuid__: string;
 	__column__: number;
@@ -26,4 +28,11 @@ export interface InputData {
 	task: string;
 	clientProject: string;
 	start: string | undefined;
+}
+
+export interface Report {
+	entries: Entry[];
+	time: number;
+	count: number;
+	data: ChartData;
 }

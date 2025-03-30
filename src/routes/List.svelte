@@ -40,6 +40,3 @@
 		{/each}
 	</ListGroup>
 {/each}
-
-<style lang="scss">
-</style>

@@ -21,6 +21,7 @@
 			display: flex;
 			align-items: center;
 			font-size: 1.5em;
+			flex: 10 0;
 			margin: 0;
 		}
 	}

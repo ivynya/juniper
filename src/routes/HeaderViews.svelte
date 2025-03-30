@@ -23,6 +23,7 @@
 		border-radius: 15px;
 		transition-duration: 0.3s;
 		height: 18px;
+		flex: 1 1;
 		padding: 5px 0;
 		position: relative;
 		z-index: 5;
