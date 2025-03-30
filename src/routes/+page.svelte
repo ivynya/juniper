@@ -6,8 +6,14 @@
 	import Report from './Report.svelte';
 
 	export let selected = 'List';
+	const order = ['List', 'Calendar', 'Report'];
 
 	function handleKeydown(event: KeyboardEvent) {
+		// left and right arrow keys
+		if (event.key === 'ArrowLeft')
+			selected = order[Math.max(order.findIndex((o) => o === selected) - 1, 0)];
+		if (event.key === 'ArrowRight')
+			selected = order[Math.min(order.findIndex((o) => o === selected) + 1, order.length - 1)];
 		if (!event.ctrlKey) return;
 		if (event.key === 'l') selected = 'List';
 		if (event.key === 'c') selected = 'Calendar';
