@@ -190,6 +190,10 @@
 			border-color: var(--color);
 		}
 		&.timerActive button {
+			border-color: var(--color);
+			color: var(--color);
+		}
+		&.timerActive .timer {
 			background: #fa0;
 			border-color: transparent;
 			color: var(--b1);
