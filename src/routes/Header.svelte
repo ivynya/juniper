@@ -1,11 +1,20 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import Slider from './Slider.svelte';
 
-	export let selected: string;
+	let { selected = $bindable() } = $props();
+
+	let hostname = $state('');
+	onMount(() => (hostname = window.location.hostname));
 </script>
 
 <header>
-	<h1><span>FAUNA</span></h1>
+	<h1>
+		<span>FAUNA</span>
+		{#if hostname === 'localhost'}
+			<span class="tag">DEV</span>
+		{/if}
+	</h1>
 	<Slider options={['List', 'Calendar', 'Report']} bind:selected />
 </header>
 
@@ -20,9 +29,20 @@
 		h1 {
 			display: flex;
 			align-items: center;
-			font-size: 1.5em;
+			font-size: 1.5rem;
 			flex: 10 0;
 			margin: 0;
+
+			.tag {
+				background-color: var(--b2);
+				border-radius: 5px;
+				color: var(--a1);
+				font-size: 0.7rem;
+				align-self: flex-start;
+				margin-left: 0.25rem;
+				margin-top: 0.5rem;
+				padding: 0 0.25rem;
+			}
 		}
 	}
 </style>
