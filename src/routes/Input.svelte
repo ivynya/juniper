@@ -12,7 +12,6 @@
 	import { nanoid } from '$lib/nanoid';
 
 	export let resolution: number = 4;
-	export let wakingHoursOnly: boolean = false;
 	export let showCalControls: boolean = false;
 	export let todayDate: string = new Date().toDateString();
 
@@ -141,8 +140,8 @@
 				{resolution}x
 			</button>
 			<label for="waking-hours">
-				<MoonStar size="18px" color={wakingHoursOnly ? 'var(--b4)' : 'var(--b2)'} />
-				<input type="checkbox" id="waking-hours" hidden bind:checked={wakingHoursOnly} />
+				<MoonStar size="18px" color={$inputData.wakingHoursOnly ? 'var(--b4)' : 'var(--b2)'} />
+				<input type="checkbox" id="waking-hours" hidden bind:checked={$inputData.wakingHoursOnly} />
 			</label>
 			<span>{todayDate}</span>
 			<button on:click={() => recalculateToday(-1)}>

@@ -28,6 +28,7 @@ export interface InputData {
 	task: string;
 	clientProject: string;
 	start: string | undefined;
+	wakingHoursOnly: boolean;
 }
 
 export interface Report {

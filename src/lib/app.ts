@@ -31,7 +31,8 @@ export const clients = writable<Client[]>([
 export const inputData = writable<InputData>({
 	task: '',
 	clientProject: ',',
-	start: undefined
+	start: undefined,
+	wakingHoursOnly: false
 });
 
 export function computeColumn(entries: Entry[], start: number, end: number): number {

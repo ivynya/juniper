@@ -1,14 +1,13 @@
 <script lang="ts">
 	import CalendarHour from './CalendarHour.svelte';
 	import Input from './Input.svelte';
-	import { formatHour } from '$lib/app';
+	import { formatHour, inputData } from '$lib/app';
 	import { onMount, onDestroy } from 'svelte';
 
 	let resolution = 4;
-	let wakingHoursOnly = false;
 	let todayDate: string;
 
-	$: hours = wakingHoursOnly ? Array(18 * resolution) : Array(24 * resolution);
+	$: hours = $inputData.wakingHoursOnly ? Array(18 * resolution) : Array(24 * resolution);
 
 	let isDragging = false;
 	let timeA = -1;
@@ -31,7 +30,7 @@
 
 		let offset = hours + minutes / 60;
 		timeCurrent = offset > 12 ? offset - 12 : offset;
-		if (wakingHoursOnly) {
+		if ($inputData.wakingHoursOnly) {
 			offset = hours - 6 + minutes / 60;
 		}
 		const hourHeight = 30 - resolution * 5;
@@ -47,12 +46,12 @@
 	onDestroy(() => clearInterval(timeInterval));
 
 	// Update position when resolution or wakingHoursOnly changes
-	$: if (resolution !== undefined || wakingHoursOnly !== undefined) {
+	$: if (resolution !== undefined || $inputData.wakingHoursOnly !== undefined) {
 		updTimeBar();
 	}
 </script>
 
-<Input bind:resolution bind:wakingHoursOnly bind:todayDate showCalControls />
+<Input bind:resolution bind:todayDate showCalControls />
 <section>
 	<div
 		class="current-time-indicator"
