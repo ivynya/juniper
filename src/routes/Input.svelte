@@ -11,6 +11,7 @@
 	} from 'lucide-svelte';
 	import { entries, clients, inputData, formatHour } from '$lib/app';
 	import { nanoid } from '$lib/nanoid';
+	import { cubicInOut } from 'svelte/easing';
 
 	export let resolution: number = 4;
 	export let showCalControls: boolean = false;
@@ -123,20 +124,15 @@
 		<button>
 			<Tag size="16px" />
 		</button>
-		<button on:click={startStopTimer}>
+		<button class="timer" on:click={startStopTimer}>
 			{#if timerActive}
 				<CirclePause size="16px" />
+				<span>{formatHour(duration)}</span>
 			{:else}
 				<Timer size="16px" />
 			{/if}
 		</button>
 	</form>
-	{#if timerActive}
-		<section class="timer">
-			<button>started</button>
-			<span>{formatHour(duration)}</span>
-		</section>
-	{/if}
 	<section class="opts">
 		<span>
 			<Clock size="18px" />
@@ -261,6 +257,17 @@
 			padding: 0 8px;
 		}
 
+		.timer {
+			display: flex;
+			gap: 0.4rem;
+			align-items: center;
+			padding-right: 0.5rem;
+
+			span {
+				transform: translateY(-0.5px);
+			}
+		}
+
 		button {
 			background: transparent;
 			border: 1px dotted var(--b2);
@@ -268,6 +275,7 @@
 			color: var(--b2);
 			cursor: pointer;
 			display: grid;
+			font-family: inherit;
 			place-items: center;
 			margin-left: 8px;
 			padding: 0.35rem;
