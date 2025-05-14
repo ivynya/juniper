@@ -6,7 +6,8 @@
 		MoonStar,
 		Timer,
 		CirclePause,
-		Tag
+		Tag,
+		XIcon
 	} from 'lucide-svelte';
 	import { entries, clients, inputData, formatHour } from '$lib/app';
 	import { nanoid } from '$lib/nanoid';
@@ -88,19 +89,26 @@
 
 <div class="input">
 	<form class="entry" class:active class:timerActive style="--color: {project.color};">
-		<input
-			type="text"
-			placeholder="What are you working on?"
-			on:focus={() => (active = true)}
-			on:blur={() => (active = false)}
-			bind:value={$inputData.task}
-			list="task-suggestions"
-		/>
-		<datalist id="task-suggestions">
-			{#each suggestions as suggestion}
-				<option value={suggestion}></option>
-			{/each}
-		</datalist>
+		<div class="entry-input">
+			{#if !!$inputData.task}
+				<button class="entry-clear" on:click={() => ($inputData.task = '')}>
+					<XIcon size="14px" />
+				</button>
+			{/if}
+			<input
+				type="text"
+				placeholder="What are you working on?"
+				on:focus={() => (active = true)}
+				on:blur={() => (active = false)}
+				bind:value={$inputData.task}
+				list="task-suggestions"
+			/>
+			<datalist id="task-suggestions">
+				{#each suggestions as suggestion}
+					<option value={suggestion}></option>
+				{/each}
+			</datalist>
+		</div>
 		<select class="project" bind:value={$inputData.clientProject} style="color: {project.color};">
 			{#each $clients as client}
 				{#if client.projects.filter((p) => !p.__archived__).length > 0}
@@ -174,6 +182,10 @@
 		&.active input {
 			border: 1px dotted var(--b3);
 		}
+		&.active .entry-clear {
+			display: grid;
+			place-items: center;
+		}
 
 		&.timerActive input {
 			border-color: var(--color);
@@ -185,6 +197,11 @@
 			background: #fa0;
 			border-color: transparent;
 			color: var(--b1);
+		}
+
+		.entry-input {
+			flex: 1 1;
+			position: relative;
 		}
 
 		input {
@@ -228,6 +245,20 @@
 			white-space: nowrap;
 			text-overflow: ellipsis;
 			overflow: hidden;
+		}
+
+		.entry-clear {
+			display: none;
+			border: none;
+			border-radius: 0;
+			color: var(--b3);
+			font-size: 0.8rem;
+			position: absolute;
+			right: 0;
+			top: 1px;
+			bottom: 1px;
+			margin: auto;
+			padding: 0 8px;
 		}
 
 		button {
