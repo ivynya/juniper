@@ -1,6 +1,7 @@
 <script lang="ts">
 	import CalendarHour from './CalendarHour.svelte';
 	import Input from './Input.svelte';
+	import { formatHour } from '$lib/app';
 	import { onMount, onDestroy } from 'svelte';
 
 	let resolution = 4;
@@ -21,53 +22,43 @@
 	// Current time indicator position
 	let currentTimePosition = '0px';
 	let timeInterval: number;
+	let timeCurrent: number;
 
-	function updateCurrentTimePosition() {
+	function updTimeBar() {
 		const now = new Date();
 		const hours = now.getHours();
 		const minutes = now.getMinutes();
 
-		// Calculate position based on current time
-		// For wakingHoursOnly mode, we adjust the calculation
-		const totalMinutes = hours * 60 + minutes;
-		const hourHeight = 30 - resolution * 4; // Height of each hour
-
+		let offset = hours + minutes / 60;
+		timeCurrent = offset > 12 ? offset - 12 : offset;
 		if (wakingHoursOnly) {
-			// If showing only waking hours (6am to midnight = 18 hours)
-			if (hours < 6) {
-				// Before 6am, position at the top
-				currentTimePosition = '0px';
-			} else {
-				// Position relative to 6am
-				const wakeMinutes = totalMinutes - 6 * 60;
-				const position = (wakeMinutes / (18 * 60)) * (hourHeight * 18 * resolution);
-				currentTimePosition = `${position}px`;
-			}
-		} else {
-			// For 24 hour mode
-			const position = (totalMinutes / (24 * 60)) * (hourHeight * 24 * resolution);
-			currentTimePosition = `${position}px`;
+			offset = hours - 6 + minutes / 60;
 		}
+		const hourHeight = 30 - resolution * 5;
+
+		const position = 10 + offset * hourHeight * resolution;
+		currentTimePosition = `${Math.max(position, 0)}px`;
 	}
 
 	onMount(() => {
-		updateCurrentTimePosition();
-		timeInterval = setInterval(updateCurrentTimePosition, 60000); // Update every minute
+		updTimeBar();
+		timeInterval = setInterval(updTimeBar, 60000); // Update every minute
 	});
-
-	onDestroy(() => {
-		clearInterval(timeInterval);
-	});
+	onDestroy(() => clearInterval(timeInterval));
 
 	// Update position when resolution or wakingHoursOnly changes
 	$: if (resolution !== undefined || wakingHoursOnly !== undefined) {
-		updateCurrentTimePosition();
+		updTimeBar();
 	}
 </script>
 
 <Input bind:resolution bind:wakingHoursOnly bind:todayDate showCalControls />
 <section>
-	<div class="current-time-indicator" style="top: {currentTimePosition};"></div>
+	<div
+		class="current-time-indicator"
+		style="top: {currentTimePosition};"
+		data-time={formatHour(timeCurrent * 36e5).slice(0, 5)}
+	></div>
 	{#each hours.reverse() as _, i (i)}
 		<CalendarHour
 			bind:isDragging
@@ -87,11 +78,24 @@
 	}
 
 	.current-time-indicator {
+		background-color: var(--b2);
 		position: absolute;
 		width: 100%;
 		height: 2px;
-		background-color: red;
-		z-index: 10;
+		z-index: 2;
 		pointer-events: none;
+
+		&::after {
+			background-color: var(--b2);
+			border-radius: 5px;
+			color: var(--a2);
+			content: attr(data-time);
+			font-size: 0.7rem;
+			position: relative;
+			top: -15px;
+			left: -4px;
+			padding: 0 0.25rem;
+			padding-bottom: 0.125rem;
+		}
 	}
 </style>
