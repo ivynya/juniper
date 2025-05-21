@@ -1,13 +1,18 @@
 <script lang="ts">
 	import CalendarHour from './CalendarHour.svelte';
 	import Input from './Input.svelte';
-	import { formatHour, inputData } from '$lib/app';
+	import { entries, formatHour, inputData, ut } from '$lib/app';
 	import { onMount, onDestroy } from 'svelte';
+	import { ArrowUp } from 'lucide-svelte';
 
 	let resolution = 4;
 	let todayDate: string;
 
 	$: hours = $inputData.wakingHoursOnly ? Array(18 * resolution) : Array(24 * resolution);
+	$: today = $entries
+		.filter((e) => new Date(e.start).toDateString() === todayDate)
+		.sort((a, b) => a.start - b.start);
+	$: entriesNotShown = today.filter((e) => Math.floor(unixToHours(ut(e.start))) < 6);
 
 	let isDragging = false;
 	let timeA = -1;
@@ -49,10 +54,26 @@
 	$: if (resolution !== undefined || $inputData.wakingHoursOnly !== undefined) {
 		updTimeBar();
 	}
+
+	// duplicate of funct in calendarhour: todo refactor
+	function unixToHours(unix: number): number {
+		return (
+			new Date(unix).getUTCHours() +
+			new Date(unix).getUTCMinutes() / 60 +
+			new Date(unix).getUTCSeconds() / 3600
+		);
+	}
 </script>
 
 <Input bind:resolution bind:todayDate showCalControls />
 <section>
+	{#if entriesNotShown.length > 0 && $inputData.wakingHoursOnly}
+		<div class="entries-not-shown">
+			<ArrowUp size="10px" strokeWidth="3" />
+			{entriesNotShown.length} earlier
+			{entriesNotShown.length > 1 ? 'entries' : 'entry'} hidden
+		</div>
+	{/if}
 	<div
 		class="current-time-indicator"
 		style="top: {currentTimePosition};"
@@ -74,6 +95,22 @@
 <style lang="scss">
 	section {
 		position: relative;
+	}
+
+	.entries-not-shown {
+		background-color: var(--b0);
+		border-bottom-right-radius: 5px;
+		color: var(--b2);
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-size: 0.7rem;
+		padding: 0 5px;
+		position: absolute;
+		top: 0;
+		left: 52px;
+		z-index: 2;
+		pointer-events: none;
 	}
 
 	.current-time-indicator {
