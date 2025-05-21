@@ -2,7 +2,7 @@
 	import { entries, clients, inputData, computeColumn } from '$lib/app';
 	import { formatCSV, parseFaunaCSV, parseTogglCSV } from '$lib/csv';
 	import { resetStorage } from '$lib/data';
-	import { CirclePower, Origami } from 'lucide-svelte';
+	import { CirclePower, FolderArchive, Origami } from 'lucide-svelte';
 	import type { Entry, Client } from '$lib/schema';
 
 	let raw = '';
@@ -104,12 +104,19 @@
 				{#each client.projects as project, p}
 					<div
 						class="project"
-						style="--project: {project.color};"
+						style="--project: {project.color};--projectt: {project.color}77;"
 						class:archived={project.__archived__}
 					>
 						<span>{project.name}</span>
-						<input type="color" bind:value={client.projects[p].color} />
-						<input type="checkbox" bind:checked={client.projects[p].__archived__} />
+						<span>
+							<input type="color" bind:value={client.projects[p].color} />
+							<label class="checkbox-container">
+								<input type="checkbox" bind:checked={client.projects[p].__archived__} />
+								<span class="checkmark">
+									<FolderArchive size="12px" />
+								</span>
+							</label>
+						</span>
 					</div>
 				{/each}
 				<form class="adder">
@@ -216,7 +223,57 @@
 			margin-bottom: 0.25rem;
 			padding: 0.25rem 0.5rem;
 
+			.checkbox-container {
+				position: relative;
+				padding-left: 20px;
+				cursor: pointer;
+				-webkit-user-select: none;
+				-moz-user-select: none;
+				-ms-user-select: none;
+				user-select: none;
+			}
+			.checkmark {
+				color: var(--a1);
+				border: 1px solid var(--project);
+				border-radius: 5px;
+				display: grid;
+				place-items: center;
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				margin: 2px;
+			}
+			.checkbox-container input {
+				position: absolute;
+				opacity: 0;
+				cursor: pointer;
+				height: 0;
+				width: 0;
+			}
+			.checkbox-container input:checked ~ .checkmark {
+				border-color: var(--a1);
+			}
+
+			.project {
+				background: radial-gradient(var(--projectt) 1px, transparent 1px);
+				background-position-y: 5px;
+				background-size: 10px 10px;
+				background-repeat: repeat-x;
+				display: flex;
+				justify-content: space-between;
+
+				span {
+					background-color: var(--b0);
+				}
+			}
+
 			.project.archived {
+				opacity: 0.75;
+			}
+			.project.archived,
+			.project.archived span {
 				background: repeating-linear-gradient(
 					45deg,
 					var(--project),
@@ -224,8 +281,6 @@
 					transparent 1px,
 					transparent 3px
 				);
-				opacity: 0.5;
-				width: fit-content;
 			}
 
 			.adder {
