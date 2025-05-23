@@ -11,7 +11,6 @@
 	} from 'lucide-svelte';
 	import { entries, clients, inputData, formatHour } from '$lib/app';
 	import { nanoid } from '$lib/nanoid';
-	import { cubicInOut } from 'svelte/easing';
 
 	export let resolution: number = 4;
 	export let showCalControls: boolean = false;
@@ -86,13 +85,20 @@
 			console.log('timer running');
 		}, 1000);
 	}
+
+	function clearTask() {
+		inputData.update((d) => {
+			d.task = '';
+			return d;
+		});
+	}
 </script>
 
 <div class="input">
 	<form class="entry" class:active class:timerActive style="--color: {project.color};">
 		<div class="entry-input">
 			{#if !!$inputData.task}
-				<button class="entry-clear" on:click={() => ($inputData.task = '')}>
+				<button class="entry-clear" on:click={clearTask}>
 					<XIcon size="14px" />
 				</button>
 			{/if}
