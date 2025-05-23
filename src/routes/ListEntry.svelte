@@ -1,22 +1,29 @@
 <script lang="ts">
 	import Editor from './Editor.svelte';
-	import { createEventDispatcher } from 'svelte';
 	import { clients, formatHour } from '$lib/app';
 	import { Kanban, Layers } from 'lucide-svelte';
 	import type { Entry } from '$lib/schema';
 
-	const dispatch = createEventDispatcher();
+	interface Props {
+		entry: Entry;
+		delEntry: (uuid: string) => void;
+		updEntry: (uuid: string, entry: Entry) => void;
+	}
+	let { entry, delEntry, updEntry }: Props = $props();
 
-	$: client = $clients.find((c) => c.name === entry.client) || { color: 'var(--b3)', projects: [] };
-	$: project = client.projects.find((p) => p.name === entry.project) || { color: 'var(--b3)' };
-
-	export let entry: Entry;
 	let entryCopy: Entry = entry;
 
+	let client = $derived(
+		$clients.find((c) => c.name === entry.client) || { color: 'var(--b3)', projects: [] }
+	);
+	let project = $derived(
+		client.projects.find((p) => p.name === entry.project) || { color: 'var(--b3)' }
+	);
+
 	let editBtn: HTMLButtonElement;
-	let edit = false;
-	let editY = 0;
-	let editX = 0;
+	let edit = $state(false);
+	let editY = $state(0);
+	let editX = $state(0);
 	function openEditor(e: MouseEvent) {
 		e.preventDefault();
 		entryCopy = { ...entry };
@@ -40,11 +47,11 @@
 
 	function del() {
 		closeEditor();
-		dispatch('delete', entry.__uuid__);
+		delEntry(entry.__uuid__);
 	}
 	function upd() {
 		edit = false;
-		dispatch('update', { uuid: entry.__uuid__, entry: entry });
+		updEntry(entry.__uuid__, entry);
 	}
 </script>
 
@@ -52,8 +59,8 @@
 	bind:this={editBtn}
 	class="entry"
 	class:edit
-	on:click={closeEditor}
-	on:contextmenu={openEditor}
+	onclick={closeEditor}
+	oncontextmenu={openEditor}
 >
 	<div class="data">
 		<span>{entry.task}</span>

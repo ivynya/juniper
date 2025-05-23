@@ -43,7 +43,7 @@
 	</div>
 
 	{#each computed.entries as entry, j}
-		<ListEntry {entry} />
+		<ListEntry {entry} delEntry={() => {}} updEntry={() => {}} />
 	{/each}
 </section>
 

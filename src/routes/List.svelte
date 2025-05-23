@@ -2,26 +2,31 @@
 	import Input from './Input.svelte';
 	import ListEntry from './ListEntry.svelte';
 	import ListGroup from './ListGroup.svelte';
+	import { onMount } from 'svelte';
 	import { entries } from '$lib/app';
 	import type { Entry } from '$lib/schema';
 
 	let maximum = $state(100);
 
-	let groups = $derived(
-		$entries
-			.sort((a, b) => b.start - a.start)
-			.slice(0, Math.min($entries.length, maximum))
-			.reduce(
-				(acc, entry) => {
-					const date = new Date(entry.start);
-					const key = date.toDateString();
-					if (!acc[key]) acc[key] = [];
-					acc[key].push(entry);
-					return acc;
-				},
-				{} as Record<string, any[]>
-			)
-	);
+	let groups: Record<string, any[]> = $state({});
+
+	onMount(() => {
+		entries.subscribe((entries) => {
+			groups = entries
+				.sort((a, b) => b.start - a.start)
+				.slice(0, Math.min(entries.length, maximum))
+				.reduce(
+					(acc, entry) => {
+						const date = new Date(entry.start);
+						const key = date.toDateString();
+						if (!acc[key]) acc[key] = [];
+						acc[key].push(entry);
+						return acc;
+					},
+					{} as Record<string, any[]>
+				);
+		});
+	});
 
 	function deleteEntry(uuid: string) {
 		console.log('delete', uuid);
@@ -36,11 +41,7 @@
 {#each Object.entries(groups) as [date, entries], i}
 	<ListGroup {date} hours={entries.reduce((acc, entry) => acc + entry.duration, 0)}>
 		{#each entries as entry, j}
-			<ListEntry
-				{entry}
-				on:update={(e) => updateEntry(e.detail.uuid, e.detail.entry)}
-				on:delete={(e) => deleteEntry(e.detail)}
-			/>
+			<ListEntry {entry} updEntry={updateEntry} delEntry={deleteEntry} />
 		{/each}
 	</ListGroup>
 {/each}

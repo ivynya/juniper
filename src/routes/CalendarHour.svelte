@@ -1,6 +1,6 @@
 <script lang="ts">
 	import CalendarEntry from './CalendarEntry.svelte';
-	import { entries, clients, inputData, computeColumn, computeColumns, ut } from '$lib/app';
+	import { entries, inputData, computeColumn, computeColumns, ut } from '$lib/app';
 	import { nanoid } from '$lib/nanoid';
 	import type { Entry } from '$lib/schema';
 
@@ -122,8 +122,8 @@
 				height={height * unixToHours(e.duration) * resolution}
 				offset={height * unixToLeftover(e.duration, resolution) * resolution}
 				editing={isDragging}
-				on:delete={(e) => deleteEntry(e.detail)}
-				on:update={(e) => updateEntry(e.detail.uuid, e.detail.entry)}
+				delEntry={deleteEntry}
+				updEntry={updateEntry}
 			/>
 		{/each}
 	</div>

@@ -1,29 +1,35 @@
 <script lang="ts">
 	import Editor from './Editor.svelte';
-	import { createEventDispatcher } from 'svelte';
-	import { clients, entries, formatHour } from '$lib/app';
+	import { clients, formatHour } from '$lib/app';
 	import type { Entry } from '$lib/schema';
 
-	const dispatch = createEventDispatcher();
-
-	export let editing: boolean;
-	export let entry: Entry;
-	export let height: number;
-	export let offset: number;
+	interface Props {
+		editing: boolean;
+		entry: Entry;
+		height: number;
+		offset: number;
+		delEntry: (uuid: string) => void;
+		updEntry: (uuid: string, entry: Entry) => void;
+	}
+	let { editing, entry, height, offset, delEntry, updEntry }: Props = $props();
 
 	let entryCopy: Entry = entry;
 
-	$: client = $clients.find((c) => c.name === entry.client) || { color: 'var(--b3)', projects: [] };
-	$: project = client.projects.find((p) => p.name === entry.project) || { color: 'var(--b3)' };
-	$: _grid = `grid-column: ${entry.__column__ + 1}; grid-row: 1 / 1`;
-	$: _height = `height: ${height}px`;
-	$: _offset = `margin-top: ${offset}px`;
-	$: _color = `background-color: ${project.color}`;
+	let client = $derived(
+		$clients.find((c) => c.name === entry.client) || { color: 'var(--b3)', projects: [] }
+	);
+	let project = $derived(
+		client.projects.find((p) => p.name === entry.project) || { color: 'var(--b3)' }
+	);
+	let _grid = $derived(`grid-column: ${entry.__column__ + 1}; grid-row: 1 / 1`);
+	let _height = $derived(`height: ${height}px`);
+	let _offset = $derived(`margin-top: ${offset}px`);
+	let _color = $derived(`background-color: ${project.color}`);
 
 	let editBtn: HTMLButtonElement;
-	let edit = false;
-	let editY = 0;
-	let editX = 0;
+	let edit = $state(false);
+	let editY = $state(0);
+	let editX = $state(0);
 	function openEditor(e: MouseEvent) {
 		e.preventDefault();
 		e.stopImmediatePropagation();
@@ -55,11 +61,11 @@
 	function del() {
 		edit = false;
 		entry = entryCopy;
-		dispatch('delete', entry.__uuid__);
+		delEntry(entry.__uuid__);
 	}
 	function upd() {
 		edit = false;
-		dispatch('update', { uuid: entry.__uuid__, entry: entry });
+		updEntry(entry.__uuid__, entry);
 	}
 
 	function prevent(e: Event) {
@@ -67,17 +73,17 @@
 	}
 </script>
 
-<!-- svelte-ignore a11y-no-static-element-interactions -->
-<!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<!-- svelte-ignore a11y_click_events_have_key_events -->
 <button
 	bind:this={editBtn}
 	class="entry"
 	style="{_grid}; {_height}; {_color}; {_offset}"
 	class:editing
 	class:edit
-	on:click={closeEditor}
-	on:contextmenu={openEditor}
-	on:mousedown={prevent}
+	onclick={closeEditor}
+	oncontextmenu={openEditor}
+	onmousedown={prevent}
 >
 	<div class="data">
 		<span>{entry.task}</span>
