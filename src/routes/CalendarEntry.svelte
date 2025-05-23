@@ -41,7 +41,7 @@
 
 		const screenWidth = window.innerWidth;
 		const editorWidth = 300;
-		const editorHeight = 300;
+		const editorHeight = 350;
 		const right = e.clientX + editorWidth;
 		const bottom = e.clientY + editorHeight;
 		if (right > screenWidth) {
