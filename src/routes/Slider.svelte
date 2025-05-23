@@ -27,6 +27,10 @@
 		padding: 5px 0;
 		position: relative;
 		z-index: 5;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
 
 		span {
 			box-sizing: border-box;

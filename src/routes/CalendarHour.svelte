@@ -149,6 +149,10 @@
 			gap: 0.5rem;
 			align-items: center;
 			width: 100%;
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			user-select: none;
 
 			.label {
 				color: var(--b2);

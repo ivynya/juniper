@@ -99,6 +99,8 @@
 		text-align: left;
 		position: relative;
 		-webkit-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
 		user-select: none;
 
 		&.edit {

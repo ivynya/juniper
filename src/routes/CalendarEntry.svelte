@@ -89,9 +89,7 @@
 		<span>{entry.task}</span>
 		<span>{entry.project} • {entry.client}</span>
 	</div>
-	<div class="opts">
-		<span>{formatHour(entry.duration)}</span>
-	</div>
+	<div class="opts">{formatHour(entry.duration)}</div>
 	{#if edit}
 		<Editor bind:entry y={editY} x={editX} {upd} {del} />
 	{/if}
@@ -119,6 +117,8 @@
 		position: relative;
 		z-index: 1;
 		-webkit-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
 		user-select: none;
 
 		&.editing {
@@ -161,15 +161,12 @@
 		}
 
 		.opts {
+			color: var(--a3);
 			display: flex;
 			justify-content: space-between;
+			font-size: 0.7rem;
+			opacity: 0.7;
 			width: 100%;
-
-			span {
-				color: var(--a3);
-				font-size: 0.7rem;
-				opacity: 0.7;
-			}
 		}
 	}
 </style>
