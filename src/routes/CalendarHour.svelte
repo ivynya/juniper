@@ -83,18 +83,15 @@
 	}
 
 	function unixToHours(unix: number): number {
-		return (
-			new Date(unix).getUTCHours() +
-			new Date(unix).getUTCMinutes() / 60 +
-			new Date(unix).getUTCSeconds() / 3600
-		);
+		const d = new Date(unix);
+		return d.getUTCHours() + d.getUTCMinutes() / 60 + d.getUTCSeconds() / 3600;
 	}
 
 	function unixToLeftover(unix: number, resolution: number): number {
-		const baseline = 1 / resolution; // 1, 0.5, 0.25, 0.125
-		const leftover = new Date(unix).getUTCMinutes() / 60 + new Date(unix).getUTCSeconds() / 3600;
+		const baseline = 60 / resolution; // 60, 30, or 15 minutes
+		const leftover = new Date(unix).getUTCMinutes();
 		if (leftover % baseline === 0) return 0;
-		return baseline - (leftover % baseline);
+		return (leftover % baseline) / 60;
 	}
 </script>
 
@@ -120,7 +117,7 @@
 			<CalendarEntry
 				entry={e}
 				height={height * unixToHours(e.duration) * resolution}
-				offset={height * unixToLeftover(e.duration, resolution) * resolution}
+				offset={height * unixToLeftover(e.start, resolution) * resolution}
 				editing={isDragging}
 				delEntry={deleteEntry}
 				updEntry={updateEntry}
