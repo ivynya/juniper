@@ -7,7 +7,7 @@ export const entries = writable<Entry[]>([
 		__column__: 0,
 		task: 'Loading data...',
 		project: 'App',
-		client: 'Fauna',
+		client: 'Juniper',
 		start: 0,
 		end: 0,
 		duration: 0,
@@ -16,7 +16,7 @@ export const entries = writable<Entry[]>([
 ]);
 export const clients = writable<Client[]>([
 	{
-		name: 'Fauna',
+		name: 'Juniper',
 		color: '#000000',
 		projects: [
 			{

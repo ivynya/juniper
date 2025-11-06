@@ -10,7 +10,7 @@
 
 <header>
 	<h1>
-		<span>FAUNA</span>
+		<span>JUNIPER</span>
 		{#if hostname === 'localhost'}
 			<span class="tag">DEV</span>
 		{/if}

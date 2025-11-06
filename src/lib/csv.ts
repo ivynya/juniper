@@ -7,7 +7,7 @@ export interface ParseResult {
 	input: InputData;
 }
 
-export function parseFaunaCSV(csv: string, ccsv: string): ParseResult {
+export function parseJuniperCSV(csv: string, ccsv: string): ParseResult {
 	const rows = csv
 		.split('\n')
 		.map((row) => row.split(',').map((cell) => cell.trim().replaceAll('"', '')));
@@ -34,7 +34,7 @@ export function parseFaunaCSV(csv: string, ccsv: string): ParseResult {
 		return entry;
 	});
 
-	const clients = parseFaunaMetaCSV(ccsv);
+	const clients = parseJuniperMetaCSV(ccsv);
 
 	return {
 		entries,
@@ -47,7 +47,7 @@ export function parseFaunaCSV(csv: string, ccsv: string): ParseResult {
 	};
 }
 
-function parseFaunaMetaCSV(csv: string): Client[] {
+function parseJuniperMetaCSV(csv: string): Client[] {
 	const rows = csv
 		.split('\n')
 		.map((row) => row.split(',').map((cell) => cell.trim().replaceAll('"', '')));

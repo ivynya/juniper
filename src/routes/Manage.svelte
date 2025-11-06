@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { entries, clients, inputData, computeColumn } from '$lib/app';
-	import { formatCSV, parseFaunaCSV, parseTogglCSV } from '$lib/csv';
+	import { formatCSV, parseJuniperCSV, parseTogglCSV } from '$lib/csv';
 	import { resetStorage } from '$lib/data';
 	import { CirclePower, FolderArchive, Origami } from 'lucide-svelte';
 	import type { Entry, Client } from '$lib/schema';
@@ -38,8 +38,8 @@
 		}
 	}
 
-	function importAsFauna() {
-		const parse = parseFaunaCSV(raw, rawmeta);
+	function importAsJuniper() {
+		const parse = parseJuniperCSV(raw, rawmeta);
 		data = parse.entries;
 		for (let i = 0; i < data.length; i++) {
 			data[i].__column__ = computeColumn(data, data[i].start, data[i].end);
@@ -66,7 +66,7 @@
 		const dataURL = URL.createObjectURL(data);
 		const a = document.createElement('a');
 		a.href = dataURL;
-		a.download = `fauna-data-${today.toISOString().split('T')[0]}.csv`;
+		a.download = `juniper-data-${today.toISOString().split('T')[0]}.csv`;
 		a.click();
 		URL.revokeObjectURL(dataURL);
 		document.body.removeChild(a);
@@ -80,7 +80,7 @@
 		const url = URL.createObjectURL(blob);
 		const b = document.createElement('a');
 		b.href = url;
-		b.download = `fauna-meta-${today.toISOString().split('T')[0]}.csv`;
+		b.download = `juniper-meta-${today.toISOString().split('T')[0]}.csv`;
 		b.click();
 		URL.revokeObjectURL(url);
 		document.body.removeChild(b);
@@ -98,7 +98,10 @@
 	{#each $clients as client}
 		<div class="client" style="--client: {client.color};">
 			<h4>
-				<span>{client.name} [{client.color}] <input type="color" bind:value={client.color} /></span>
+				<span
+					>{client.name} [{client.color}]
+					<input type="color" bind:value={client.color} /></span
+				>
 			</h4>
 			<div class="content">
 				{#each client.projects as project, p}
@@ -111,7 +114,10 @@
 						<span>
 							<input type="color" bind:value={client.projects[p].color} />
 							<label class="checkbox-container">
-								<input type="checkbox" bind:checked={client.projects[p].__archived__} />
+								<input
+									type="checkbox"
+									bind:checked={client.projects[p].__archived__}
+								/>
 								<span class="checkmark">
 									<FolderArchive size="12px" />
 								</span>
@@ -138,8 +144,11 @@
 
 	<h3>IMPORT</h3>
 	<div class="import">
-		<button on:click={() => importAsToggl()}><CirclePower size="14px" />From Toggl Track</button>
-		<button on:click={() => importAsFauna()}><Origami size="14px" />From Fauna Export</button>
+		<button on:click={() => importAsToggl()}><CirclePower size="14px" />From Toggl Track</button
+		>
+		<button on:click={() => importAsJuniper()}
+			><Origami size="14px" />From Juniper Export</button
+		>
 	</div>
 	<b>data:</b>
 	<input type="file" accept=".csv" on:change={handleFileUpload} />
