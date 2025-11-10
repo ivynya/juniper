@@ -8,7 +8,7 @@
 	let projects = $clients.map((c) => c.projects).flat();
 
 	let by: 'project' | 'task' = $state('project');
-	let start: string = $state(new Date(new Date('2025-03-31')).toISOString().slice(0, 10));
+	let start: string = $state(new Date(new Date('2025-09-22')).toISOString().slice(0, 10));
 	let periods = $state(8);
 	let divisor: 'month' | 'week' | 'day' = $state('week');
 	let ex: string = $state(''); // filter property
