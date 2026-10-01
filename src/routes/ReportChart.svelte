@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { Chart, type ChartConfiguration, type ChartData } from 'chart.js/auto';
-	import { formatHour } from '$lib/app';
+	import { formatHour } from '#lib/app.js';
 
 	let chartEl: HTMLCanvasElement;
 	interface Props {

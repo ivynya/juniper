@@ -1,8 +1,8 @@
 <script lang="ts">
 	import CalendarEntry from './CalendarEntry.svelte';
-	import { entries, inputData, computeColumn, computeColumns, ut } from '$lib/app';
-	import { nanoid } from '$lib/nanoid';
-	import type { Entry } from '$lib/schema';
+	import { entries, inputData, computeColumn, computeColumns, ut } from '#lib/app.js';
+	import { nanoid } from '#lib/nanoid.js';
+	import type { Entry } from '#lib/schema.js';
 
 	export let isDragging: boolean;
 	export let timeA: number;

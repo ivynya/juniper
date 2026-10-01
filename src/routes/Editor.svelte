@@ -1,9 +1,9 @@
 <script lang="ts">
 	import EditorTime from './EditorTime.svelte';
-	import { clients, tz, ut, formatHour } from '$lib/app';
+	import { clients, tz, ut, formatHour } from '#lib/app.js';
 	import { scale } from 'svelte/transition';
 	import { ArrowRight, Check, Circle, Kanban, Layers, Tag, Trash } from 'lucide-svelte';
-	import type { Entry } from '$lib/schema';
+	import type { Entry } from '#lib/schema.js';
 
 	interface Props {
 		entry: Entry;

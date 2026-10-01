@@ -1,7 +1,7 @@
 <script lang="ts">
 	import CalendarHour from './CalendarHour.svelte';
 	import Input from './Input.svelte';
-	import { entries, formatHour, inputData, ut } from '$lib/app';
+	import { entries, formatHour, inputData, ut } from '#lib/app.js';
 	import { onMount, onDestroy } from 'svelte';
 	import { ArrowUp } from 'lucide-svelte';
 

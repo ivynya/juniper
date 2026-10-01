@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { formatHour } from '$lib/app';
+	import { formatHour } from '#lib/app.js';
 
 	export let date: string;
 	export let hours: number;

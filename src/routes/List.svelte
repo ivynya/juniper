@@ -3,8 +3,8 @@
 	import ListEntry from './ListEntry.svelte';
 	import ListGroup from './ListGroup.svelte';
 	import { onMount } from 'svelte';
-	import { entries } from '$lib/app';
-	import type { Entry } from '$lib/schema';
+	import { entries } from '#lib/app.js';
+	import type { Entry } from '#lib/schema.js';
 
 	let maximum = $state(100);
 

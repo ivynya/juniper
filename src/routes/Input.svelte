@@ -9,8 +9,8 @@
 		Tag,
 		XIcon
 	} from 'lucide-svelte';
-	import { entries, clients, inputData, formatHour } from '$lib/app';
-	import { nanoid } from '$lib/nanoid';
+	import { entries, clients, inputData, formatHour } from '#lib/app.js';
+	import { nanoid } from '#lib/nanoid.js';
 
 	export let resolution: number = 4;
 	export let showCalControls: boolean = false;

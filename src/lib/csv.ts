@@ -1,5 +1,5 @@
-import { nanoid } from '$lib/nanoid';
-import type { Entry, Client, InputData } from '$lib/schema';
+import { nanoid } from '#lib/nanoid.js';
+import type { Entry, Client, InputData } from '#lib/schema.js';
 
 export interface ParseResult {
 	entries: Entry[];

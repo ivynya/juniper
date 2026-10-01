@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Editor from './Editor.svelte';
-	import { clients, formatHour } from '$lib/app';
-	import type { Entry } from '$lib/schema';
+	import { clients, formatHour } from '#lib/app.js';
+	import type { Entry } from '#lib/schema.js';
 
 	interface Props {
 		editing: boolean;

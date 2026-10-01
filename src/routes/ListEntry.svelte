@@ -1,8 +1,8 @@
 <script lang="ts">
 	import Editor from './Editor.svelte';
-	import { clients, formatHour } from '$lib/app';
+	import { clients, formatHour } from '#lib/app.js';
 	import { Kanban, Layers } from 'lucide-svelte';
-	import type { Entry } from '$lib/schema';
+	import type { Entry } from '#lib/schema.js';
 
 	interface Props {
 		entry: Entry;

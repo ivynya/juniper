@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { entries, clients, inputData } from '$lib/app';
-	import { loadData, saveData, saveInput, saveMeta } from '$lib/data';
+	import { entries, clients, inputData } from '#lib/app.js';
+	import { loadData, saveData, saveInput, saveMeta } from '#lib/data.js';
 	import { onMount } from 'svelte';
 
 	onMount(() => {

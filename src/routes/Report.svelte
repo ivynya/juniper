@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { clients, entries, formatHour } from '$lib/app';
-	import { getDataPeriod } from '$lib/metric';
+	import { clients, entries, formatHour } from '#lib/app.js';
+	import { getDataPeriod } from '#lib/metric.js';
 	import ListEntry from './ListEntry.svelte';
 	import ReportChart from './ReportChart.svelte';
 	import Slider from './Slider.svelte';

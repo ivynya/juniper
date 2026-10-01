@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { entries, clients, inputData, computeColumn } from '$lib/app';
-	import { formatCSV, parseJuniperCSV, parseTogglCSV } from '$lib/csv';
-	import { resetStorage } from '$lib/data';
+	import { entries, clients, inputData, computeColumn } from '#lib/app.js';
+	import { formatCSV, parseJuniperCSV, parseTogglCSV } from '#lib/csv.js';
+	import { resetStorage } from '#lib/data.js';
 	import { CirclePower, FolderArchive, Origami } from 'lucide-svelte';
-	import type { Entry, Client } from '$lib/schema';
+	import type { Entry, Client } from '#lib/schema.js';
 
 	let raw = '';
 	let rawmeta = '';
@@ -114,10 +114,7 @@
 						<span>
 							<input type="color" bind:value={client.projects[p].color} />
 							<label class="checkbox-container">
-								<input
-									type="checkbox"
-									bind:checked={client.projects[p].__archived__}
-								/>
+								<input type="checkbox" bind:checked={client.projects[p].__archived__} />
 								<span class="checkmark">
 									<FolderArchive size="12px" />
 								</span>
@@ -144,11 +141,8 @@
 
 	<h3>IMPORT</h3>
 	<div class="import">
-		<button on:click={() => importAsToggl()}><CirclePower size="14px" />From Toggl Track</button
-		>
-		<button on:click={() => importAsJuniper()}
-			><Origami size="14px" />From Juniper Export</button
-		>
+		<button on:click={() => importAsToggl()}><CirclePower size="14px" />From Toggl Track</button>
+		<button on:click={() => importAsJuniper()}><Origami size="14px" />From Juniper Export</button>
 	</div>
 	<b>data:</b>
 	<input type="file" accept=".csv" on:change={handleFileUpload} />

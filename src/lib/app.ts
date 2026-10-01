@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import type { Entry, Client, InputData } from '$lib/schema';
+import type { Entry, Client, InputData } from '#lib/schema.js';
 
 export const entries = writable<Entry[]>([
 	{

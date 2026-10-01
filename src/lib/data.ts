@@ -1,4 +1,4 @@
-import type { Entry, Client, InputData } from '$lib/schema';
+import type { Entry, Client, InputData } from '#lib/schema.js';
 import type { ParseResult } from './csv';
 
 export function saveData(data: Entry[]) {
